@@ -1,5 +1,4 @@
 const { Pool } = require('pg');
-const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
@@ -22,6 +21,7 @@ class SQLDatabase {
       });
     } else {
       console.log('Connecting to Local SQLite Database...');
+      const sqlite3 = require('sqlite3').verbose();
       const dbPath = path.join(__dirname, 'sanario.db');
       this.sqliteDb = new sqlite3.Database(dbPath, (err) => {
         if (err) console.error('Failed to open SQLite database:', err);
