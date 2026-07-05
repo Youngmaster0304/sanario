@@ -13,7 +13,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # 4. Install production dependencies (ignores devDependencies)
-RUN npm ci --only=production
+RUN npm install --omit=dev
 
 # 5. Copy application source code
 COPY . .
