@@ -96,6 +96,47 @@
             </svg>
             <span>Continue with Google</span>
           </button>
+
+          <button type="button" class="btn phone-signin-trigger-btn" onclick="togglePhoneAuthSection(true)" style="margin-top: 10px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; background: none; border: 1px solid var(--border); color: var(--text-main); font-weight: 600; padding: 12px; border-radius: var(--radius-md); cursor: pointer; transition: background-color var(--transition-fast);">
+            <span class="material-icons" style="font-size: 18px;">phone_android</span>
+            <span>Sign in with Phone (SMS OTP)</span>
+          </button>
+        </form>
+
+        <!-- Phone Login Form -->
+        <form id="form-phone-login" class="auth-form" onsubmit="handleVerifyOTP(event)" style="display: none;">
+          <h2>Phone Verification</h2>
+          <p class="form-subtitle">Log in instantly with SMS OTP</p>
+          
+          <!-- STEP 1: Input Phone Number -->
+          <div id="phone-input-step">
+            <div class="input-group">
+              <label for="login-phone">Phone Number</label>
+              <input type="text" id="login-phone" placeholder="e.g., +919876543210" required>
+            </div>
+            <button type="button" class="btn btn-primary full-width-btn" onclick="sendPhoneOTP()">Send Verification Code</button>
+          </div>
+
+          <!-- STEP 2: Input OTP -->
+          <div id="phone-otp-step" class="hidden">
+            <div class="input-group">
+              <label for="login-otp">Enter 6-Digit Verification Code</label>
+              <input type="text" id="login-otp" placeholder="e.g., 123456" pattern="[0-9]{6}" maxlength="6">
+            </div>
+            
+            <p id="otp-hint-banner" style="font-size: 12px; padding: 10px; border-radius: var(--radius-sm); background-color: var(--bg-app); border: 1px dashed var(--primary); margin-bottom: 12px; display: none; color: var(--primary); font-weight: 600; text-align: center;"></p>
+            
+            <button type="submit" class="btn btn-primary full-width-btn">Verify & Sign In</button>
+            <button type="button" class="btn btn-secondary full-width-btn" onclick="resetPhoneOTPForm()" style="margin-top: var(--spacing-sm);">Resend Code</button>
+          </div>
+          
+          <div id="phone-login-error" class="error-msg hidden"></div>
+          
+          <div class="auth-divider"><span>or</span></div>
+          
+          <button type="button" class="btn btn-secondary full-width-btn" onclick="togglePhoneAuthSection(false)">
+            <span>Back to Password Login</span>
+          </button>
         </form>
         
         <!-- Register Form (Multi-Step Onboarding Wizard) -->

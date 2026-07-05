@@ -95,7 +95,8 @@ class SQLDatabase {
           xp INT DEFAULT 0,
           badge VARCHAR(50) DEFAULT 'Novice Mind',
           theme VARCHAR(50) DEFAULT 'nature',
-          growth_vibe VARCHAR(150) DEFAULT ''
+          growth_vibe VARCHAR(150) DEFAULT '',
+          phone VARCHAR(50) DEFAULT ''
         )
       `);
 
@@ -156,6 +157,7 @@ class SQLDatabase {
 
       // Dynamic column updates for existing databases (adds columns silently if missing)
       try { await this.execute(`ALTER TABLE users ADD COLUMN growth_vibe VARCHAR(150) DEFAULT ''`); } catch(e){}
+      try { await this.execute(`ALTER TABLE users ADD COLUMN phone VARCHAR(50) DEFAULT ''`); } catch(e){}
       try { await this.execute(`ALTER TABLE wellbeing ADD COLUMN steps_goal INT DEFAULT 8000`); } catch(e){}
       try { await this.execute(`ALTER TABLE wellbeing ADD COLUMN water_goal INT DEFAULT 8`); } catch(e){}
       try { await this.execute(`ALTER TABLE wellbeing ADD COLUMN screentime_limit_min INT DEFAULT 120`); } catch(e){}
@@ -333,6 +335,34 @@ class SQLDatabase {
       INSERT INTO users (id, username, password, name, profile_pic, interests, xp, badge, theme) VALUES 
       (?, ?, ?, ?, ?, 'Productivity,Coding,Fitness,Mental Wellness', 100, 'Mindful Learner', 'nature')
     `, [id, email, 'google_oauth_dummy_pass', name, pic]);
+
+    await this.execute(`
+      INSERT INTO wellbeing (user_id, screen_time_sec, steps, water_glasses, habit_streak, completed_goals, last_updated) VALUES
+      (?, 0, 0, 0, 0, '', ?)
+    `, [id, new Date().toISOString()]);
+
+    return await this.getUserById(id);
+  }
+
+  async getUserByPhone(phone) {
+    return await this.queryRow(`SELECT * FROM users WHERE phone = ?`, [phone]);
+  }
+
+  async findOrCreatePhoneUser(phone) {
+    let user = await this.getUserByPhone(phone);
+    if (user) {
+      if (user.interests) user.interests = user.interests.split(',');
+      return user;
+    }
+
+    const id = 'user_' + Math.random().toString(36).substr(2, 9);
+    const suffix = phone.slice(-4) || 'User';
+    const name = `User ${suffix}`;
+
+    await this.execute(`
+      INSERT INTO users (id, username, password, name, profile_pic, interests, xp, badge, theme, phone) VALUES 
+      (?, ?, 'phone_otp_dummy_pass', ?, 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', 'Productivity,Coding,Fitness,Mental Wellness', 100, 'Mindful Learner', 'nature', ?)
+    `, [id, phone, name, phone]);
 
     await this.execute(`
       INSERT INTO wellbeing (user_id, screen_time_sec, steps, water_glasses, habit_streak, completed_goals, last_updated) VALUES

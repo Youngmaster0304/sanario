@@ -236,6 +236,90 @@ async function handleLogin(event) {
   }
 }
 
+function togglePhoneAuthSection(showPhone) {
+  const formLogin = document.getElementById('form-login');
+  const formPhone = document.getElementById('form-phone-login');
+  const errDiv = document.getElementById('phone-login-error');
+  if (errDiv) errDiv.classList.add('hidden');
+  
+  if (showPhone) {
+    formLogin.style.display = 'none';
+    formPhone.style.display = 'block';
+  } else {
+    formLogin.style.display = 'block';
+    formPhone.style.display = 'none';
+    resetPhoneOTPForm();
+  }
+}
+
+async function sendPhoneOTP() {
+  const phoneInput = document.getElementById('login-phone').value.trim();
+  const errDiv = document.getElementById('phone-login-error');
+  errDiv.classList.add('hidden');
+
+  if (!phoneInput) {
+    errDiv.textContent = 'Please enter a valid phone number.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+
+  try {
+    const res = await apiCall('/auth/phone-send-otp', 'POST', { phone: phoneInput });
+    if (res.success) {
+      // Toggle to step 2 (OTP code input)
+      document.getElementById('phone-input-step').classList.add('hidden');
+      document.getElementById('phone-otp-step').classList.remove('hidden');
+
+      // Display the simulated OTP banner so they can test it easily!
+      const hintBanner = document.getElementById('otp-hint-banner');
+      if (hintBanner) {
+        hintBanner.textContent = `Simulated SMS OTP Code: ${res.simulatedCode}`;
+        hintBanner.style.display = 'block';
+      }
+    }
+  } catch (err) {
+    errDiv.textContent = err.message;
+    errDiv.classList.remove('hidden');
+  }
+}
+
+async function handleVerifyOTP(event) {
+  event.preventDefault();
+  const phone = document.getElementById('login-phone').value.trim();
+  const code = document.getElementById('login-otp').value.trim();
+  const errDiv = document.getElementById('phone-login-error');
+  errDiv.classList.add('hidden');
+
+  if (!phone || !code) {
+    errDiv.textContent = 'Verification code is required.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+
+  try {
+    const res = await apiCall('/auth/phone-verify-otp', 'POST', { phone, code });
+    if (res.success) {
+      // Successful login/register!
+      loginUser(res.user, res.token);
+      resetPhoneOTPForm();
+    }
+  } catch (err) {
+    errDiv.textContent = err.message;
+    errDiv.classList.remove('hidden');
+  }
+}
+
+function resetPhoneOTPForm() {
+  document.getElementById('phone-input-step').classList.remove('hidden');
+  document.getElementById('phone-otp-step').classList.add('hidden');
+  document.getElementById('login-otp').value = '';
+  const hintBanner = document.getElementById('otp-hint-banner');
+  if (hintBanner) {
+    hintBanner.style.display = 'none';
+    hintBanner.textContent = '';
+  }
+}
+
 async function handleRegister(event) {
   event.preventDefault();
   const name = document.getElementById('reg-name').value.trim();
