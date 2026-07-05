@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in - Google Accounts</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f0f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .oauth-box {
+      background-color: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      width: 450px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .google-logo {
+      width: 75px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 400;
+      color: #202124;
+      margin: 0 0 8px 0;
+    }
+    p {
+      font-size: 16px;
+      color: #5f6368;
+      margin: 0 0 32px 0;
+    }
+    .accounts-list {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid #dadce0;
+      margin-bottom: 24px;
+    }
+    .account-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 8px;
+      border-bottom: 1px solid #dadce0;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 0.2s;
+    }
+    .account-item:hover {
+      background-color: #f8f9fa;
+    }
+    .account-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 12px;
+      object-fit: cover;
+    }
+    .account-details {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .account-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #3c4043;
+    }
+    .account-email {
+      font-size: 12px;
+      color: #5f6368;
+    }
+    .custom-form-trigger {
+      display: flex;
+      align-items: center;
+      padding: 16px 8px;
+      border-bottom: 1px solid #dadce0;
+      cursor: pointer;
+      text-align: left;
+      font-size: 14px;
+      color: #1a73e8;
+      font-weight: 500;
+    }
+    .custom-form-trigger:hover {
+      background-color: #f8f9fa;
+    }
+    .custom-input-box {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+      border-top: 1px solid #dadce0;
+      padding-top: 16px;
+    }
+    .custom-input-box input {
+      padding: 10px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+      outline: none;
+    }
+    .custom-input-box input:focus {
+      border-color: #1a73e8;
+    }
+    .submit-btn {
+      background-color: #1a73e8;
+      color: #ffffff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      align-self: flex-end;
+      transition: background-color 0.2s;
+    }
+    .submit-btn:hover {
+      background-color: #1557b0;
+    }
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="oauth-box">
+    <!-- Google Logo SVG -->
+    <svg class="google-logo" viewBox="0 0 24 24" width="75" height="24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+    </svg>
+    
+    <h1>Sign in with Google</h1>
+    <p>to continue to Sanario</p>
+    
+    <div class="accounts-list">
+      <!-- Account 1 -->
+      <div class="account-item" onclick="selectAccount('abhinav.jha@gmail.com', 'Abhinav Jha', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80')">
+        <img class="account-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80" alt="Abhinav Jha">
+        <div class="account-details">
+          <div class="account-name">Abhinav Jha</div>
+          <div class="account-email">abhinav.jha@gmail.com</div>
+        </div>
+      </div>
+      
+      <!-- Account 2 -->
+      <div class="account-item" onclick="selectAccount('elena.r@gmail.com', 'Dr. Elena Rostova', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80')">
+        <img class="account-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80" alt="Elena Rostova">
+        <div class="account-details">
+          <div class="account-name">Dr. Elena Rostova</div>
+          <div class="account-email">elena.r@gmail.com</div>
+        </div>
+      </div>
+      
+      <!-- Custom Account Option -->
+      <div class="custom-form-trigger" id="custom-trigger" onclick="toggleCustomForm()">
+        Use another account
+      </div>
+    </div>
+    
+    <!-- Custom Account Input Fields -->
+    <div class="custom-input-box hidden" id="custom-box">
+      <input type="text" id="custom-name" placeholder="Full Name" required>
+      <input type="email" id="custom-email" placeholder="Email Address" required>
+      <button class="submit-btn" onclick="submitCustomAccount()">Continue</button>
+    </div>
+  </div>
+
+  <script>
+    function selectAccount(email, name, profilePic) {
+      // Send selected Google profile payload back to Sanario frontend app
+      if (window.opener) {
+        window.opener.postMessage({
+          type: 'google-auth-success',
+          data: { email, name, profilePic }
+        }, window.location.origin);
+      }
+      window.close();
+    }
+
+    function toggleCustomForm() {
+      document.getElementById('custom-box').classList.toggle('hidden');
+      document.getElementById('custom-trigger').classList.toggle('hidden');
+    }
+
+    function submitCustomAccount() {
+      const name = document.getElementById('custom-name').value.trim();
+      const email = document.getElementById('custom-email').value.trim();
+      
+      if (!name || !email) {
+        alert('Please enter your Name and Email address.');
+        return;
+      }
+
+      // Generate a mock Google avatar
+      const profilePic = `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80`;
+      selectAccount(email, name, profilePic);
+    }
+  </script>
+</body>
+</html>

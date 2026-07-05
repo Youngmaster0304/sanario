@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanario – A Healthy Social Media Ecosystem</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Sanario is a modern social media platform designed to reduce digital addiction, encourage physical activity, support learning communities, and foster intentional technology habits.">
+  <meta name="keywords" content="digital wellbeing, mental health, habit tracker, learning communities, social network, screen time, intentional productivity">
+  
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+  
+  <!-- Material Icons for Instagram-style Nav -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- Official Google Identity Services SDK for Production Sign-In -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-nature">
+
+  <!-- ================= AUTH PAGE CONTAINER ================= -->
+  <div id="auth-container" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-brand-pane">
+        <div class="brand-header">
+          <span class="material-icons brand-icon">spa</span>
+          <h1>Sanario</h1>
+        </div>
+        <p class="brand-slogan">Replace addictive scrolling with purposeful engagement.</p>
+        
+        <div class="brand-features-list">
+          <div class="feature-item">
+            <span class="material-icons">track_changes</span>
+            <div>
+              <h3>Goal-Based Feed</h3>
+              <p>You select what you want to become. The algorithm serves your interests, not your attention.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="material-icons">directions_walk</span>
+            <div>
+              <h3>Health Companion</h3>
+              <p>Follow WHO guidelines. Log water, step counts, and get physical stretch reminders.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="material-icons">diversity_3</span>
+            <div>
+              <h3>Intentional Communities</h3>
+              <p>Collaborate with accountability partners and study groups on AI, coding, and fitness.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="auth-form-pane">
+        <div class="auth-tabs">
+          <button id="tab-login" class="auth-tab-btn active" onclick="switchAuthTab('login')">Login</button>
+          <button id="tab-register" class="auth-tab-btn" onclick="switchAuthTab('register')">Register</button>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="form-login" class="auth-form active" onsubmit="handleLogin(event)">
+          <h2>Welcome Back</h2>
+          <p class="form-subtitle">Re-enter your mindful space</p>
+          
+          <div class="input-group">
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" placeholder="e.g., abhinav" required autocomplete="username">
+          </div>
+          
+          <div class="input-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          
+          <div id="login-error" class="error-msg hidden"></div>
+          
+          <button type="submit" class="btn btn-primary auth-submit-btn">Enter Sanario</button>
+          
+          <div class="auth-divider"><span>or</span></div>
+          
+          <button type="button" class="btn google-signin-btn" onclick="openGoogleLoginPopup()">
+            <svg class="google-btn-icon" viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+        </form>
+        
+        <!-- Register Form -->
+        <form id="form-register" class="auth-form" onsubmit="handleRegister(event)">
+          <h2>Join Sanario</h2>
+          <p class="form-subtitle">Design your digital growth journey</p>
+          
+          <div class="input-group">
+            <label for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" placeholder="e.g., Abhinav Jha" required autocomplete="name">
+          </div>
+          
+          <div class="input-group">
+            <label for="reg-username">Username</label>
+            <input type="text" id="reg-username" placeholder="e.g., abhinav_jha" required autocomplete="username">
+          </div>
+          
+          <div class="input-group">
+            <label for="reg-password">Password</label>
+            <input type="password" id="reg-password" placeholder="Minimum 6 characters" required autocomplete="new-password">
+          </div>
+          
+          <div class="input-group">
+            <label>Select Your Core Focus Areas</label>
+            <div class="interests-grid">
+              <label class="interest-checkbox-label">
+                <input type="checkbox" name="reg-interests" value="Productivity" checked>
+                <span>Productivity</span>
+              </label>
+              <label class="interest-checkbox-label">
+                <input type="checkbox" name="reg-interests" value="Coding" checked>
+                <span>Coding</span>
+              </label>
+              <label class="interest-checkbox-label">
+                <input type="checkbox" name="reg-interests" value="Fitness">
+                <span>Fitness</span>
+              </label>
+              <label class="interest-checkbox-label">
+                <input type="checkbox" name="reg-interests" value="Startups">
+                <span>Startups</span>
+              </label>
+              <label class="interest-checkbox-label">
+                <input type="checkbox" name="reg-interests" value="Mental Wellness">
+                <span>Mental Wellness</span>
+              </label>
+              <label class="interest-checkbox-label">
+                <input type="checkbox" name="reg-interests" value="Nutrition">
+                <span>Nutrition</span>
+              </label>
+            </div>
+          </div>
+          
+          <div id="register-error" class="error-msg hidden"></div>
+          
+          <button type="submit" class="btn btn-primary auth-submit-btn">Create Account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MAIN APP CONTAINER ================= -->
+  <div id="app-container" class="app-layout hidden">
+    
+    <!-- LEFT SIDEBAR (Instagram Layout) -->
+    <aside class="left-sidebar">
+      <div class="sidebar-logo" onclick="navigateTo('home')">
+        <span class="material-icons logo-icon">spa</span>
+        <span class="logo-text">Sanario</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <button class="nav-item active" id="nav-home" onclick="navigateTo('home')">
+          <span class="material-icons">home</span>
+          <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-item" id="nav-explore" onclick="navigateTo('explore')">
+          <span class="material-icons">explore</span>
+          <span class="nav-label">Explore</span>
+        </button>
+        <button class="nav-item" id="nav-reels" onclick="navigateTo('reels')">
+          <span class="material-icons">play_circle_outline</span>
+          <span class="nav-label">Reels</span>
+        </button>
+        <button class="nav-item" id="nav-health" onclick="navigateTo('health')">
+          <span class="material-icons">favorite</span>
+          <span class="nav-label">Health Hub</span>
+        </button>
+        <button class="nav-item" id="nav-chat" onclick="navigateTo('chat')">
+          <span class="material-icons">chat_bubble</span>
+          <span class="nav-label">AI Coach</span>
+        </button>
+        <button class="nav-item" id="nav-communities" onclick="navigateTo('communities')">
+          <span class="material-icons">groups</span>
+          <span class="nav-label">Communities</span>
+        </button>
+        <button class="nav-item" id="nav-partners" onclick="navigateTo('partners')">
+          <span class="material-icons">handshake</span>
+          <span class="nav-label">Partners</span>
+        </button>
+        <button class="nav-item" id="nav-profile" onclick="navigateTo('profile')">
+          <span class="material-icons">person</span>
+          <span class="nav-label">Profile</span>
+        </button>
+        
+        <button class="btn btn-secondary create-post-btn" onclick="openCreatePostModal()">
+          <span class="material-icons">add_box</span>
+          <span class="nav-label">Create Insight</span>
+        </button>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button class="nav-item logout-btn" onclick="handleLogout()">
+          <span class="material-icons">logout</span>
+          <span class="nav-label">Logout</span>
+        </button>
+      </div>
+    </aside>
+    
+    <!-- CENTRAL PANEL -->
+    <main class="central-panel">
+      
+      <!-- Top Sticky Header -->
+      <header class="top-header">
+        <div class="search-wrapper">
+          <span class="material-icons search-icon">search</span>
+          <input type="text" placeholder="Search insights, goals..." id="search-input" onkeyup="handleSearch(event)">
+        </div>
+        
+        <!-- Smart Toggle for Intentional Mode -->
+        <div class="intentional-toggle-container">
+          <label class="toggle-switch">
+            <input type="checkbox" id="intentional-mode-switch" onchange="toggleIntentionalMode(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label font-outfit" id="mode-badge">Intentional Mode</span>
+        </div>
+      </header>
+      
+      <!-- DYNAMIC CONTENT SECTIONS -->
+      
+      <!-- VIEW: HOME (Feed & Reflection) -->
+      <section id="view-home" class="app-view active">
+        
+        <!-- Intentional Mode - Reflection Section -->
+        <div id="intentional-reflection" class="reflection-block hidden">
+          <h2 class="font-lora">Morning Reflection</h2>
+          <p class="reflection-sub">A curated session for Mindful Tech & Productivity.</p>
+          
+          <div class="reflection-prompt-card">
+            <h3 class="font-outfit">Intentionality Prompt</h3>
+            <p>What do you want to learn today? Jot down a quick thought before exploring.</p>
+            <div class="prompt-input-area">
+              <textarea placeholder="e.g. Coding Express server, stretching for 5 mins..." id="reflection-text"></textarea>
+              <button class="btn btn-primary btn-sm" onclick="saveReflection()">Save Reflection</button>
+            </div>
+            <p id="saved-reflection-display" class="saved-reflection hidden"></p>
+          </div>
+        </div>
+        
+        <!-- Standard Daily Intentions Section (Feed Title) -->
+        <div id="standard-header" class="feed-header-block">
+          <h2 class="font-lora">Daily Intentions</h2>
+          <p class="feed-sub">Your focus and wellness for today.</p>
+        </div>
+
+        <!-- Stories / Daily Intentions Row -->
+        <div class="stories-row" id="stories-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+        
+        <!-- Category Filters -->
+        <div class="category-filters" id="category-filters-container">
+          <button class="filter-pill active" onclick="filterCategory('All')">All Topics</button>
+          <button class="filter-pill" onclick="filterCategory('Productivity')">Productivity</button>
+          <button class="filter-pill" onclick="filterCategory('Coding')">Coding</button>
+          <button class="filter-pill" onclick="filterCategory('Fitness')">Fitness</button>
+          <button class="filter-pill" onclick="filterCategory('Mental Wellness')">Mental Wellness</button>
+          <button class="filter-pill" onclick="filterCategory('Startups')">Startups</button>
+        </div>
+
+        <!-- Wellness Risk Nudges Alert Box -->
+        <div id="wellness-alerts-container"></div>
+        
+        <!-- Feed Card List -->
+        <div class="feed-list" id="feed-list-container">
+          <!-- Feed Cards injected via JS -->
+        </div>
+
+        <!-- Breathe Break Banner (Triggered after every 2 scroll cards or manually) -->
+        <div id="breathe-card-break" class="breathe-card hidden">
+          <div class="breathe-card-icon">
+            <span class="material-icons">spa</span>
+          </div>
+          <div class="breathe-card-body">
+            <h3>Breathe</h3>
+            <p>Take a moment to pause before continuing your session.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="triggerBreathingSession()">Start Break</button>
+        </div>
+
+        <!-- Natural Resting Point -->
+        <div id="natural-resting-point" class="resting-point hidden">
+          <p>You've reached a natural resting point in this session.</p>
+          <div class="resting-actions">
+            <button class="btn btn-primary" onclick="triggerNextTopic()">Next Topic: Deep Work</button>
+            <button class="btn btn-secondary" onclick="concludeSession()">Conclude Session</button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- VIEW: EXPLORE -->
+      <section id="view-explore" class="app-view hidden">
+        <h2 class="font-lora">Explore Growth</h2>
+        <p class="section-subtitle">Discover educational content, trends, and insightful articles.</p>
+        
+        <div class="explore-grid">
+          <div class="explore-card large-explore" onclick="loadArticle('post1')">
+            <div class="explore-card-img" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80')"></div>
+            <div class="explore-card-info">
+              <span class="tag">Mindful Tech</span>
+              <h3>The Cost of Distraction</h3>
+              <p>Learn how task-switching limits neuroplasticity.</p>
+            </div>
+          </div>
+          
+          <div class="explore-card" onclick="loadArticle('post2')">
+            <div class="explore-card-img" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=400&q=80')"></div>
+            <div class="explore-card-info">
+              <span class="tag">Coding</span>
+              <h3>Why Clean Code Feels So Soothing</h3>
+            </div>
+          </div>
+          
+          <div class="explore-card" onclick="loadArticle('post3')">
+            <div class="explore-card-img" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80')"></div>
+            <div class="explore-card-info">
+              <span class="tag">Wellness</span>
+              <h3>Mental Solitude in a Loud World</h3>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="font-outfit explore-sub-title">Trending Habits in Sanario</h3>
+        <div class="trending-habits-list">
+          <div class="trending-habit-item">
+            <span class="material-icons habit-icon">timer</span>
+            <div class="habit-details">
+              <h4>90-minute Deep Work blocks</h4>
+              <p>Completed by 4,200 users today (+15% this week)</p>
+            </div>
+          </div>
+          <div class="trending-habit-item">
+            <span class="material-icons habit-icon">directions_walk</span>
+            <div class="habit-details">
+              <h4>Outdoor Walk (30 mins)</h4>
+              <p>Completed by 2,890 users today</p>
+            </div>
+          </div>
+          <div class="trending-habit-item">
+            <span class="material-icons habit-icon">menu_book</span>
+            <div class="habit-details">
+              <h4>Read 1 Non-fiction Chapter</h4>
+              <p>Completed by 1,450 users today</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- VIEW: REELS -->
+      <section id="view-reels" class="app-view hidden">
+        <h2 class="font-lora">Mindful Reels</h2>
+        <p class="section-subtitle">Self-improvement & physical health video loops. Anti-doomscroll breaks apply.</p>
+        
+        <div class="reels-container" id="reels-deck-container">
+          <!-- Reels injected via JS -->
+        </div>
+      </section>
+      
+      <!-- VIEW: HEALTH HUB -->
+      <section id="view-health" class="app-view hidden">
+        <h2 class="font-lora">Health Companion</h2>
+        <p class="section-subtitle">WHO-based wellness targets tailored to support your physical and cognitive wellbeing.</p>
+        
+        <div class="health-metrics-grid">
+          <!-- Step Counter Card -->
+          <div class="health-card">
+            <div class="health-card-header">
+              <span class="material-icons steps-icon">directions_walk</span>
+              <h3>Walking & Steps</h3>
+            </div>
+            <div class="health-card-body">
+              <div class="metric-value" id="health-steps-val">4,200 <span class="unit">steps</span></div>
+              <p class="metric-goal">Goal: 8,000 steps (WHO Recommendation)</p>
+              <div class="metric-progress-bar">
+                <div class="progress-fill" id="health-steps-progress" style="width: 52.5%"></div>
+              </div>
+            </div>
+            <div class="health-card-actions">
+              <button class="btn btn-secondary btn-sm" onclick="incrementSteps(1000)">+1,000 Steps</button>
+              <button class="btn btn-secondary btn-sm" onclick="incrementSteps(2000)">+2,000 Steps</button>
+            </div>
+          </div>
+
+          <!-- Hydration Card -->
+          <div class="health-card">
+            <div class="health-card-header">
+              <span class="material-icons water-icon">local_drink</span>
+              <h3>Hydration tracker</h3>
+            </div>
+            <div class="health-card-body">
+              <div class="metric-value" id="health-water-val">3 / 8 <span class="unit">glasses</span></div>
+              <p class="metric-goal">Goal: 8 glasses (approx. 2 Liters)</p>
+              <div class="metric-progress-bar">
+                <div class="progress-fill" id="health-water-progress" style="width: 37.5%"></div>
+              </div>
+            </div>
+            <div class="health-card-actions">
+              <button class="btn btn-secondary btn-sm" onclick="incrementWater()">Log 1 Glass</button>
+            </div>
+          </div>
+
+          <!-- Active Screen Break Card -->
+          <div class="health-card">
+            <div class="health-card-header">
+              <span class="material-icons break-icon">visibility</span>
+              <h3>Digital Eye Strain</h3>
+            </div>
+            <div class="health-card-body">
+              <div class="metric-value" id="health-screentime-val">1h 12m</div>
+              <p class="metric-goal">Total Active Screen Session Time</p>
+              <p class="metric-warning" id="screentime-warning">Next break recommended in 15 minutes.</p>
+            </div>
+            <div class="health-card-actions">
+              <button class="btn btn-secondary btn-sm" onclick="triggerBreathingSession()">Take 1-Min Stretch Break</button>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="font-outfit explore-sub-title">WHO Physical Activity Recommendations</h3>
+        <div class="who-tips-box">
+          <p> Adults aged 18–64 should do at least 150–300 minutes of moderate-intensity aerobic physical activity per week. Limiting sedentary time and taking frequent micro-breaks from keyboards/screens directly reduces cardiovascular risks and enhances attention Span.</p>
+        </div>
+      </section>
+      
+      <!-- VIEW: AI COACH CHAT -->
+      <section id="view-chat" class="app-view hidden">
+        <h2 class="font-lora">AI Wellness Coach</h2>
+        <p class="section-subtitle">A conversational agent to optimize your routines, plan workouts, and reduce screen fatigue.</p>
+        
+        <div class="chat-container">
+          <div class="chat-header">
+            <span class="material-icons coach-avatar">spa</span>
+            <div>
+              <h3>Sanario Wellness Guide</h3>
+              <p class="status-indicator"><span class="dot-online"></span> Ready to plan or guide breathing</p>
+            </div>
+          </div>
+          
+          <div class="chat-messages" id="chat-messages-container">
+            <!-- Messages populated via JS -->
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="chat-quick-actions">
+            <button class="chip-btn" onclick="sendQuickMessage('Help me plan my day')">
+              <span class="material-icons">calendar_today</span> Plan my day
+            </button>
+            <button class="chip-btn" onclick="sendQuickMessage('I am feeling overwhelmed. Let\'s breathe.')">
+              <span class="material-icons">spa</span> Start a 5-min stretch
+            </button>
+            <button class="chip-btn" onclick="sendQuickMessage('Suggest a fitness break activity')">
+              <span class="material-icons">directions_run</span> Fitness Nudge
+            </button>
+          </div>
+          
+          <form class="chat-input-form" onsubmit="handleSendMessage(event)">
+            <input type="text" placeholder="Ask about planning, exercises, stretch breaks, or stress relief..." id="chat-input-text">
+            <button type="submit" class="chat-send-btn">
+              <span class="material-icons">arrow_upward</span>
+            </button>
+          </form>
+        </div>
+      </section>
+      
+      <!-- VIEW: COMMUNITIES -->
+      <section id="view-communities" class="app-view hidden">
+        <h2 class="font-lora">Learning Communities</h2>
+        <p class="section-subtitle">Join groups focused on collaboration and skill-building without vanity metrics.</p>
+        
+        <div class="communities-grid">
+          <div class="community-card">
+            <div class="comm-header">
+              <div class="comm-icon comm-code">
+                <span class="material-icons">code</span>
+              </div>
+              <div class="comm-title">
+                <h3>Coding & Architecture</h3>
+                <p>1,240 active coders</p>
+              </div>
+            </div>
+            <p class="comm-desc">Share clean code guidelines, reviews, study plans, and build collaborative open-source projects.</p>
+            <button class="btn btn-secondary btn-sm full-width-btn" onclick="toggleJoinCommunity(this, 'Coding')">Joined</button>
+          </div>
+
+          <div class="community-card">
+            <div class="comm-header">
+              <div class="comm-icon comm-ai">
+                <span class="material-icons">psychology</span>
+              </div>
+              <div class="comm-title">
+                <h3>Artificial Intelligence</h3>
+                <p>890 active learners</p>
+              </div>
+            </div>
+            <p class="comm-desc">Discuss neural networks, vector databases, multi-agent frameworks, and building mindful applications.</p>
+            <button class="btn btn-secondary btn-sm full-width-btn" onclick="toggleJoinCommunity(this, 'AI')">Joined</button>
+          </div>
+
+          <div class="community-card">
+            <div class="comm-header">
+              <div class="comm-icon comm-fit">
+                <span class="material-icons">directions_run</span>
+              </div>
+              <div class="comm-title">
+                <h3>Fitness & Movement</h3>
+                <p>3,410 active members</p>
+              </div>
+            </div>
+            <p class="comm-desc">Track step scores, share outdoor run maps, support hydration milestones, and follow WHO updates.</p>
+            <button class="btn btn-secondary btn-sm full-width-btn" onclick="toggleJoinCommunity(this, 'Fitness')">Join Community</button>
+          </div>
+
+          <div class="community-card">
+            <div class="comm-header">
+              <div class="comm-icon comm-wellness">
+                <span class="material-icons">self_improvement</span>
+              </div>
+              <div class="comm-title">
+                <h3>Mindful Technology</h3>
+                <p>4,120 active members</p>
+              </div>
+            </div>
+            <p class="comm-desc">Workshops and discussions around intentional tech usage, digital detox boundaries, and focus routines.</p>
+            <button class="btn btn-secondary btn-sm full-width-btn" onclick="toggleJoinCommunity(this, 'Mental Wellness')">Joined</button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- VIEW: ACCOUNTABILITY PARTNERS -->
+      <section id="view-partners" class="app-view hidden">
+        <h2 class="font-lora">Accountability Partners</h2>
+        <p class="section-subtitle">Pair with friends to complete challenges, share streaks, and stay consistent.</p>
+        
+        <div class="partners-list">
+          <div class="partner-card">
+            <div class="partner-profile">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80" alt="Elena Rostova">
+              <div>
+                <h3>Dr. Elena Rostova</h3>
+                <p class="partner-badge">Cognitive Researcher • Focus Sage</p>
+              </div>
+            </div>
+            <div class="partner-stats">
+              <div class="p-stat">
+                <span class="val">12 Days</span>
+                <span class="lbl">Streak</span>
+              </div>
+              <div class="p-stat">
+                <span class="val">8,200</span>
+                <span class="lbl">Steps Today</span>
+              </div>
+              <div class="p-stat">
+                <span class="val">98%</span>
+                <span class="lbl">Goal Rate</span>
+              </div>
+            </div>
+            <div class="partner-actions">
+              <span class="badge badge-success">Active Partner</span>
+              <button class="btn btn-secondary btn-sm" onclick="navigateTo('chat')">Discuss Goals</button>
+            </div>
+          </div>
+
+          <div class="partner-card">
+            <div class="partner-profile">
+              <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&h=150&q=80" alt="Dev guy">
+              <div>
+                <h3>Dev Community</h3>
+                <p class="partner-badge">Software Engineer • Habit Hero</p>
+              </div>
+            </div>
+            <div class="partner-stats">
+              <div class="p-stat">
+                <span class="val">5 Days</span>
+                <span class="lbl">Streak</span>
+              </div>
+              <div class="p-stat">
+                <span class="val">3,100</span>
+                <span class="lbl">Steps Today</span>
+              </div>
+              <div class="p-stat">
+                <span class="val">80%</span>
+                <span class="lbl">Goal Rate</span>
+              </div>
+            </div>
+            <div class="partner-actions">
+              <span class="badge badge-success">Active Partner</span>
+              <button class="btn btn-secondary btn-sm" onclick="navigateTo('chat')">Discuss Goals</button>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="font-outfit explore-sub-title">Joint Wellness Challenge</h3>
+        <div class="joint-challenge-card">
+          <div class="jc-info">
+            <span class="badge-tag">Community Challenge</span>
+            <h4>Weeklong Focus Sync</h4>
+            <p>Complete 5 hours of Deep Work combined with 30,000 steps together as a group. Success earns all members **100 XP** and the "Synergy Badge".</p>
+          </div>
+          <div class="jc-progress">
+            <div class="progress-text">64% Completed (Elena: 15h/15k, You: 4.5h/12.6k)</div>
+            <div class="metric-progress-bar">
+              <div class="progress-fill" style="width: 64%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- VIEW: PROFILE & SETTINGS -->
+      <section id="view-profile" class="app-view hidden">
+        <h2 class="font-lora">Your Mindful Profile</h2>
+        <p class="section-subtitle">Analyze your wellness achievements, custom interests, and select visual themes.</p>
+        
+        <div class="profile-header-card">
+          <div class="profile-main-info">
+            <img id="profile-avatar" src="" alt="Profile Avatar" class="profile-main-pic">
+            <div>
+              <h3 id="profile-display-name"></h3>
+              <p id="profile-username-tag"></p>
+              <div class="badge-pill" id="profile-badge-val">Habit Hero</div>
+            </div>
+          </div>
+          <div class="profile-xp-meter">
+            <div class="xp-text"><span id="profile-xp-val">320</span> XP Total</div>
+            <div class="metric-progress-bar">
+              <div class="progress-fill" id="profile-xp-progress" style="width: 32%"></div>
+            </div>
+            <p class="xp-sub">Next Milestone: Focus Sage (600 XP)</p>
+          </div>
+        </div>
+
+        <h3 class="font-outfit explore-sub-title">Manage Focus Areas</h3>
+        <div class="focus-areas-container">
+          <div class="interests-grid" id="profile-interests-container">
+            <!-- Populated via JS -->
+          </div>
+          <button class="btn btn-primary btn-sm" style="margin-top: 15px" onclick="saveUserInterests()">Update Focus Areas</button>
+        </div>
+
+        <h3 class="font-outfit explore-sub-title">Sanario Premium Visual Themes</h3>
+        <p class="theme-desc">Select visual themes specifically tuned to minimize visual overload and promote calm concentration.</p>
+        <div class="theme-selection-grid">
+          <button class="theme-selector-card theme-opt-nature" onclick="changeTheme('nature')">
+            <span class="theme-circle" style="background-color: #5c7f67;"></span>
+            <h4>Nature</h4>
+            <p>Sage greens & soft linen</p>
+          </button>
+          
+          <button class="theme-selector-card theme-opt-productivity" onclick="changeTheme('productivity')">
+            <span class="theme-circle" style="background-color: #3b5a75;"></span>
+            <h4>Productivity</h4>
+            <p>Clean slates & indigo</p>
+          </button>
+          
+          <button class="theme-selector-card theme-opt-minimal" onclick="changeTheme('minimal')">
+            <span class="theme-circle" style="background-color: #111;"></span>
+            <h4>Minimal</h4>
+            <p>High-contrast & borderlines</p>
+          </button>
+          
+          <button class="theme-selector-card theme-opt-dark-focus" onclick="changeTheme('dark-focus')">
+            <span class="theme-circle" style="background-color: #f5b041;"></span>
+            <h4>Dark Focus</h4>
+            <p>Soothing amber & charcoal</p>
+          </button>
+          
+          <button class="theme-selector-card theme-opt-reading" onclick="changeTheme('reading')">
+            <span class="theme-circle" style="background-color: #f4ecd8;"></span>
+            <h4>Reading</h4>
+            <p>Warm sepia serif</p>
+          </button>
+        </div>
+      </section>
+
+    </main>
+    
+    <!-- RIGHT SIDEBAR PANEL (Instagram Layout) -->
+    <aside class="right-sidebar">
+      
+      <!-- User Profile Widget -->
+      <div class="user-profile-header">
+        <img id="right-user-pic" src="" alt="Profile">
+        <div class="user-details">
+          <h4 id="right-user-name">Abhinav Jha</h4>
+          <p id="right-user-badge">Habit Hero • <span id="right-user-xp">320</span> XP</p>
+        </div>
+      </div>
+      
+      <!-- Deep Work Clock widget (Instagram side element twist) -->
+      <div class="widget-card timer-widget">
+        <div class="widget-header">
+          <span class="material-icons">timer</span>
+          <h4>Deep Work</h4>
+        </div>
+        <div class="timer-display" id="timer-display-val">25:00</div>
+        <div class="timer-controls">
+          <button class="btn-timer-action" id="btn-timer-toggle" onclick="toggleDeepWorkTimer()">
+            <span class="material-icons">play_arrow</span>
+          </button>
+          <button class="btn-timer-action" onclick="resetDeepWorkTimer()">
+            <span class="material-icons">refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Digital Wellbeing Dashboard -->
+      <div class="widget-card stats-widget">
+        <div class="widget-header">
+          <span class="material-icons">dashboard</span>
+          <h4>Digital Wellbeing</h4>
+        </div>
+        <div class="wellbeing-mini-stats">
+          <div class="mini-stat-item" onclick="navigateTo('health')">
+            <div class="stat-ring-container">
+              <span class="material-icons stat-icon screentime-icon">visibility</span>
+            </div>
+            <div class="stat-info">
+              <h5 id="mini-screentime">1h 12m</h5>
+              <p>Screen Time</p>
+            </div>
+          </div>
+
+          <div class="mini-stat-item" onclick="navigateTo('health')">
+            <div class="stat-ring-container">
+              <span class="material-icons stat-icon steps-icon">directions_walk</span>
+            </div>
+            <div class="stat-info">
+              <h5 id="mini-steps">4,200</h5>
+              <p>Steps</p>
+            </div>
+          </div>
+
+          <div class="mini-stat-item" onclick="navigateTo('health')">
+            <div class="stat-ring-container">
+              <span class="material-icons stat-icon water-icon">local_drink</span>
+            </div>
+            <div class="stat-info">
+              <h5 id="mini-water">3 / 8</h5>
+              <p>Glasses</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Challenges (Checklist that syncs to DB) -->
+      <div class="widget-card challenges-widget">
+        <div class="widget-header">
+          <span class="material-icons">emoji_events</span>
+          <h4>Daily Challenges</h4>
+        </div>
+        <div class="challenge-checklist">
+          <label class="challenge-item">
+            <input type="checkbox" id="challenge-walk" onchange="toggleChallenge('Walk 5000 steps')">
+            <span class="challenge-label-text">Walk 5000 steps <span class="xp-tag">+50 XP</span></span>
+          </label>
+          <label class="challenge-item">
+            <input type="checkbox" id="challenge-screen" onchange="toggleChallenge('No phone for 30 mins')">
+            <span class="challenge-label-text">No phone for 30 mins <span class="xp-tag">+100 XP</span></span>
+          </label>
+          <label class="challenge-item">
+            <input type="checkbox" id="challenge-read" onchange="toggleChallenge('Read 1 insightful article')">
+            <span class="challenge-label-text">Read 1 insightful article <span class="xp-tag">+30 XP</span></span>
+          </label>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal: Breathing Exercise -->
+  <div id="modal-breathing" class="modal hidden">
+    <div class="modal-content breathing-modal-content">
+      <span class="close-btn" onclick="closeBreathingModal()">&times;</span>
+      <h2 class="font-lora">Mindful Break</h2>
+      <p>Reset your autonomic nervous system. Focus on the breathing circle.</p>
+      
+      <div class="breathing-circle-container">
+        <div class="breathing-circle" id="breathing-pulse-circle"></div>
+      </div>
+      
+      <h3 id="breathing-text-instruction" class="font-outfit">Inhale deeply</h3>
+      <p id="breathing-timer-countdown">Time remaining: 60s</p>
+      
+      <button class="btn btn-secondary" onclick="closeBreathingModal()">End Exercise</button>
+    </div>
+  </div>
+
+  <!-- Modal: Create Post -->
+  <div id="modal-create-post" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeCreatePostModal()">&times;</span>
+      <h2 class="font-lora">Create Mindful Insight</h2>
+      <p>Share knowledge, habits, or reflections with the community.</p>
+      
+      <form onsubmit="handleCreatePost(event)">
+        <div class="input-group">
+          <label for="post-category">Topic Category</label>
+          <select id="post-category" required>
+            <option value="Productivity">Productivity</option>
+            <option value="Coding">Coding</option>
+            <option value="Fitness">Fitness</option>
+            <option value="Mental Wellness">Mental Wellness</option>
+            <option value="Startups">Startups</option>
+            <option value="Nutrition">Nutrition</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="post-media-type">Attachment Type</label>
+          <select id="post-media-type" onchange="togglePostMediaUrlInput(this.value)">
+            <option value="text">Text Only</option>
+            <option value="image">Image Attachment</option>
+            <option value="video">Video Attachment</option>
+          </select>
+        </div>
+
+        <div class="input-group hidden" id="post-media-url-group">
+          <label for="post-media-url">Media URL (Supports mp4, jpg, png)</label>
+          <input type="text" id="post-media-url" placeholder="e.g. https://example.com/image.jpg">
+          <span class="char-counter" style="margin-top: 4px;">
+            Quick Presets: 
+            <a href="#" onclick="setMediaPreset('https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=600&q=80'); return false;">Coder Desk</a> | 
+            <a href="#" onclick="setMediaPreset('https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?auto=format&fit=crop&w=600&q=80'); return false;">Solitude Nature</a> |
+            <a href="#" onclick="setMediaPreset('https://assets.mixkit.co/videos/preview/mixkit-stretching-exercises-in-the-office-40456-large.mp4'); return false;">Office Stretch Video</a>
+          </span>
+        </div>
+        
+        <div class="input-group">
+          <label for="post-content">What is your insight?</label>
+          <textarea id="post-content" rows="6" placeholder="Constructive thoughts, learnings or guidelines..." required></textarea>
+          <span class="char-counter">Content is checked by Sanario NLP Safety Filter to prevent clickbaits & toxicity.</span>
+        </div>
+        
+        <div id="create-post-error" class="error-msg hidden"></div>
+        
+        <button type="submit" class="btn btn-primary full-width-btn">Publish to Feed</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JS Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
