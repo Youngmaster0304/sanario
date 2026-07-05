@@ -203,17 +203,36 @@ function switchAuthTab(tab) {
   const regTab = document.getElementById('tab-register');
   const loginForm = document.getElementById('form-login');
   const regForm = document.getElementById('form-register');
+  const phoneForm = document.getElementById('form-phone-login');
 
   if (tab === 'login') {
     loginTab.classList.add('active');
     regTab.classList.remove('active');
+    
+    // Reset login view to show password form, hide phone form
+    loginForm.style.display = 'block';
     loginForm.classList.add('active');
+    
+    if (phoneForm) {
+      phoneForm.style.display = 'none';
+      phoneForm.classList.remove('active');
+    }
+    
     regForm.classList.remove('active');
   } else {
     regTab.classList.add('active');
     loginTab.classList.remove('active');
+    
     regForm.classList.add('active');
-    regForm.classList.remove('active');
+    
+    // Hide both password and phone login forms
+    loginForm.classList.remove('active');
+    loginForm.style.display = 'none';
+    
+    if (phoneForm) {
+      phoneForm.style.display = 'none';
+      phoneForm.classList.remove('active');
+    }
   }
 }
 
