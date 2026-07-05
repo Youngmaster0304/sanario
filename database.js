@@ -584,6 +584,17 @@ class SQLDatabase {
   }
 
   async saveOTP(phone, code, expiresAt) {
+    try {
+      await this.execute(`
+        CREATE TABLE IF NOT EXISTS phone_otps (
+          phone VARCHAR(50) PRIMARY KEY,
+          code VARCHAR(10) NOT NULL,
+          expires_at VARCHAR(50) NOT NULL
+        )
+      `);
+    } catch (e) {
+      console.error('Failed to auto-create phone_otps table:', e);
+    }
     await this.execute(`DELETE FROM phone_otps WHERE phone = ?`, [phone]);
     await this.execute(`
       INSERT INTO phone_otps (phone, code, expires_at) VALUES (?, ?, ?)
@@ -592,6 +603,15 @@ class SQLDatabase {
   }
 
   async getOTP(phone) {
+    try {
+      await this.execute(`
+        CREATE TABLE IF NOT EXISTS phone_otps (
+          phone VARCHAR(50) PRIMARY KEY,
+          code VARCHAR(10) NOT NULL,
+          expires_at VARCHAR(50) NOT NULL
+        )
+      `);
+    } catch (e) {}
     return await this.queryRow(`SELECT * FROM phone_otps WHERE phone = ?`, [phone]);
   }
 
