@@ -422,6 +422,7 @@ button, input, select, textarea {
 .auth-submit-btn {
   margin-top: var(--spacing-md);
   padding: 14px;
+  width: 100%;
 }
 
 .error-msg {

@@ -233,6 +233,9 @@ function switchAuthTab(tab) {
       phoneForm.style.display = 'none';
       phoneForm.classList.remove('active');
     }
+
+    // Reset wizard to first step
+    nextOnboardingStep(1);
   }
 }
 
