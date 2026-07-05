@@ -16,7 +16,6 @@ const aiCoach = require('./models/ai_coach');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'sanario_secret_key_123';
-const activeOtps = {}; // In-memory store for phone verification: { phone: { code, expires } }
 
 app.use(cors());
 app.use(express.json());
@@ -170,7 +169,7 @@ app.post('/api/auth/google-login', async (req, res) => {
 });
 
 // Phone OTP Send
-app.post('/api/auth/phone-send-otp', (req, res) => {
+app.post('/api/auth/phone-send-otp', async (req, res) => {
   const { phone } = req.body;
   if (!phone) {
     return res.status(400).json({ error: 'Phone number is required.' });
@@ -181,20 +180,25 @@ app.post('/api/auth/phone-send-otp', (req, res) => {
 
   // Generate 6-digit OTP code
   const code = Math.floor(100000 + Math.random() * 900000).toString();
-  const expires = Date.now() + 5 * 60 * 1000; // 5 minute expiry
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString(); // 5 minute expiry
 
-  activeOtps[cleanPhone] = { code, expires };
+  try {
+    await db.saveOTP(cleanPhone, code, expiresAt);
 
-  console.log(`========================================`);
-  console.log(`[PHONE AUTH OTP] To: ${cleanPhone}`);
-  console.log(`Verification Code: ${code} (Expires in 5m)`);
-  console.log(`========================================`);
+    console.log(`========================================`);
+    console.log(`[PHONE AUTH OTP] To: ${cleanPhone}`);
+    console.log(`Verification Code: ${code} (Expires in 5m)`);
+    console.log(`========================================`);
 
-  res.json({
-    success: true,
-    message: 'Verification code sent.',
-    simulatedCode: code // Returned in response for ease of local prototyping
-  });
+    res.json({
+      success: true,
+      message: 'Verification code sent.',
+      simulatedCode: code // Returned in response for ease of local prototyping
+    });
+  } catch (err) {
+    console.error('Failed to save OTP in database:', err);
+    res.status(500).json({ error: 'Internal server error. Failed to save verification code.' });
+  }
 });
 
 // Phone OTP Verify
@@ -205,25 +209,26 @@ app.post('/api/auth/phone-verify-otp', async (req, res) => {
   }
 
   const cleanPhone = phone.replace(/[^0-9+]/g, '');
-  const record = activeOtps[cleanPhone];
-
-  if (!record) {
-    return res.status(400).json({ error: 'No active OTP verification code found for this phone number.' });
-  }
-
-  if (Date.now() > record.expires) {
-    delete activeOtps[cleanPhone];
-    return res.status(400).json({ error: 'Verification code expired. Please request a new one.' });
-  }
-
-  if (record.code !== code.toString().trim()) {
-    return res.status(400).json({ error: 'Invalid verification code. Please check and try again.' });
-  }
-
-  // Clear code
-  delete activeOtps[cleanPhone];
-
+  
   try {
+    const record = await db.getOTP(cleanPhone);
+
+    if (!record) {
+      return res.status(400).json({ error: 'No active OTP verification code found for this phone number.' });
+    }
+
+    if (new Date() > new Date(record.expires_at)) {
+      await db.deleteOTP(cleanPhone);
+      return res.status(400).json({ error: 'Verification code expired. Please request a new one.' });
+    }
+
+    if (record.code !== code.toString().trim()) {
+      return res.status(400).json({ error: 'Invalid verification code. Please check and try again.' });
+    }
+
+    // Clear code
+    await db.deleteOTP(cleanPhone);
+
     const user = await db.findOrCreatePhoneUser(cleanPhone);
     const token = generateUserToken(user);
     res.json({ success: true, user, token });

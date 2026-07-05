@@ -200,6 +200,15 @@ class SQLDatabase {
         )
       `);
 
+      // 9. Phone OTPs Table
+      await this.execute(`
+        CREATE TABLE IF NOT EXISTS phone_otps (
+          phone VARCHAR(50) PRIMARY KEY,
+          code VARCHAR(10) NOT NULL,
+          expires_at VARCHAR(50) NOT NULL
+        )
+      `);
+
       // Check if db is empty and seed data
       const userCount = await this.queryRow(`SELECT COUNT(*) as count FROM users`);
       if (parseInt(userCount.count) === 0) {
@@ -572,6 +581,23 @@ class SQLDatabase {
     `, [id, userId, sender, recipient, message, timestamp]);
 
     return await this.queryRow(`SELECT * FROM chats WHERE id = ?`, [id]);
+  }
+
+  async saveOTP(phone, code, expiresAt) {
+    await this.execute(`DELETE FROM phone_otps WHERE phone = ?`, [phone]);
+    await this.execute(`
+      INSERT INTO phone_otps (phone, code, expires_at) VALUES (?, ?, ?)
+    `, [phone, code, expiresAt]);
+    return true;
+  }
+
+  async getOTP(phone) {
+    return await this.queryRow(`SELECT * FROM phone_otps WHERE phone = ?`, [phone]);
+  }
+
+  async deleteOTP(phone) {
+    await this.execute(`DELETE FROM phone_otps WHERE phone = ?`, [phone]);
+    return true;
   }
 }
 
