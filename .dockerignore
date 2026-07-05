@@ -1,0 +1,9 @@
+node_modules/
+.env
+sanario.db
+db.json
+.git/
+.gitignore
+.DS_Store
+*.log
+npm-debug.log*
