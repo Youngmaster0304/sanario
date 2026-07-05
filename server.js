@@ -416,9 +416,13 @@ app.post('/api/chat/:recipient', authUser, async (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(` Sanario Full-Stack Server Running on Port ${PORT}`);
-  console.log(` Access Local App: http://localhost:${PORT}`);
-  console.log(`====================================================`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(` Sanario Full-Stack Server Running on Port ${PORT}`);
+    console.log(` Access Local App: http://localhost:${PORT}`);
+    console.log(`====================================================`);
+  });
+}
+
+module.exports = app;
