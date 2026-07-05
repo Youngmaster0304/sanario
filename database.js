@@ -94,7 +94,8 @@ class SQLDatabase {
           interests TEXT,
           xp INT DEFAULT 0,
           badge VARCHAR(50) DEFAULT 'Novice Mind',
-          theme VARCHAR(50) DEFAULT 'nature'
+          theme VARCHAR(50) DEFAULT 'nature',
+          growth_vibe VARCHAR(150) DEFAULT ''
         )
       `);
 
@@ -146,9 +147,18 @@ class SQLDatabase {
           water_glasses INT DEFAULT 0,
           habit_streak INT DEFAULT 0,
           completed_goals TEXT,
-          last_updated VARCHAR(50) NOT NULL
+          last_updated VARCHAR(50) NOT NULL,
+          steps_goal INT DEFAULT 8000,
+          water_goal INT DEFAULT 8,
+          screentime_limit_min INT DEFAULT 120
         )
       `);
+
+      // Dynamic column updates for existing databases (adds columns silently if missing)
+      try { await this.execute(`ALTER TABLE users ADD COLUMN growth_vibe VARCHAR(150) DEFAULT ''`); } catch(e){}
+      try { await this.execute(`ALTER TABLE wellbeing ADD COLUMN steps_goal INT DEFAULT 8000`); } catch(e){}
+      try { await this.execute(`ALTER TABLE wellbeing ADD COLUMN water_goal INT DEFAULT 8`); } catch(e){}
+      try { await this.execute(`ALTER TABLE wellbeing ADD COLUMN screentime_limit_min INT DEFAULT 120`); } catch(e){}
 
       // 6. Chats Table
       await this.execute(`
@@ -283,7 +293,7 @@ class SQLDatabase {
     return user;
   }
 
-  async createUser(username, password, name, interests = []) {
+  async createUser(username, password, name, interests = [], growthVibe = '', stepsGoal = 8000, waterGoal = 8, screentimeLimit = 120) {
     const existing = await this.getUser(username);
     if (existing) return null;
 
@@ -291,19 +301,20 @@ class SQLDatabase {
     const interestsStr = interests.length > 0 ? interests.join(',') : 'Productivity,Mental Wellness';
 
     await this.execute(`
-      INSERT INTO users (id, username, password, name, profile_pic, interests, xp, badge, theme) VALUES 
-      (?, ?, ?, ?, ?, ?, 0, 'Novice Mind', 'nature')
+      INSERT INTO users (id, username, password, name, profile_pic, interests, xp, badge, theme, growth_vibe) VALUES 
+      (?, ?, ?, ?, ?, ?, 0, 'Novice Mind', 'nature', ?)
     `, [
       id, username, password, name, 
       'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
-      interestsStr
+      interestsStr,
+      growthVibe
     ]);
 
     // Setup wellbeing entry
     await this.execute(`
-      INSERT INTO wellbeing (user_id, screen_time_sec, steps, water_glasses, habit_streak, completed_goals, last_updated) VALUES
-      (?, 0, 0, 0, 0, '', ?)
-    `, [id, new Date().toISOString()]);
+      INSERT INTO wellbeing (user_id, screen_time_sec, steps, water_glasses, habit_streak, completed_goals, last_updated, steps_goal, water_goal, screentime_limit_min) VALUES
+      (?, 0, 0, 0, 0, '', ?, ?, ?, ?)
+    `, [id, new Date().toISOString(), stepsGoal, waterGoal, screentimeLimit]);
 
     return await this.getUserById(id);
   }
@@ -471,6 +482,9 @@ class SQLDatabase {
       wb.habitStreak = wb.habit_streak;
       wb.completedGoals = wb.completed_goals ? wb.completed_goals.split('|') : [];
       wb.lastUpdated = wb.last_updated;
+      wb.stepsGoal = wb.steps_goal !== undefined && wb.steps_goal !== null ? wb.steps_goal : 8000;
+      wb.waterGoal = wb.water_goal !== undefined && wb.water_goal !== null ? wb.water_goal : 8;
+      wb.screentimeLimitMin = wb.screentime_limit_min !== undefined && wb.screentime_limit_min !== null ? wb.screentime_limit_min : 120;
     }
     return wb;
   }

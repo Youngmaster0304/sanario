@@ -94,13 +94,13 @@ function generateUserToken(user) {
 
 // Auth Endpoints
 app.post('/api/auth/register', async (req, res) => {
-  const { username, password, name, interests } = req.body;
+  const { username, password, name, interests, growthVibe, stepsGoal, waterGoal, screentimeLimit } = req.body;
   if (!username || !password || !name) {
     return res.status(400).json({ error: 'Username, password, and name are required.' });
   }
 
   try {
-    const user = await db.createUser(username, password, name, interests);
+    const user = await db.createUser(username, password, name, interests, growthVibe, stepsGoal, waterGoal, screentimeLimit);
     if (!user) {
       return res.status(400).json({ error: 'Username is already taken.' });
     }

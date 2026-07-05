@@ -238,8 +238,8 @@ async function handleLogin(event) {
 
 async function handleRegister(event) {
   event.preventDefault();
-  const name = document.getElementById('reg-name').value;
-  const u = document.getElementById('reg-username').value;
+  const name = document.getElementById('reg-name').value.trim();
+  const u = document.getElementById('reg-username').value.trim();
   const p = document.getElementById('reg-password').value;
   const errDiv = document.getElementById('register-error');
   
@@ -248,9 +248,22 @@ async function handleRegister(event) {
   const interestEls = document.querySelectorAll('input[name="reg-interests"]:checked');
   const interests = Array.from(interestEls).map(el => el.value);
 
+  const growthVibe = document.getElementById('reg-growth-vibe').value.trim();
+  const stepsGoal = parseInt(document.getElementById('reg-step-goal').value) || 8000;
+  const waterGoal = parseInt(document.getElementById('reg-water-goal').value) || 8;
+  const screentimeLimit = parseInt(document.getElementById('reg-screentime-limit').value) || 120;
+
+  if (!name || !u || !p) {
+    errDiv.textContent = 'Please fill out your account details in Step 1.';
+    errDiv.classList.remove('hidden');
+    nextOnboardingStep(1);
+    return;
+  }
+
   if (p.length < 6) {
     errDiv.textContent = 'Password must be at least 6 characters.';
     errDiv.classList.remove('hidden');
+    nextOnboardingStep(1);
     return;
   }
 
@@ -259,7 +272,11 @@ async function handleRegister(event) {
       username: u,
       password: p,
       name,
-      interests
+      interests,
+      growthVibe,
+      stepsGoal,
+      waterGoal,
+      screentimeLimit
     });
     if (res.success) {
       loginUser(res.user, res.token);
@@ -267,6 +284,44 @@ async function handleRegister(event) {
   } catch (err) {
     errDiv.textContent = err.message;
     errDiv.classList.remove('hidden');
+  }
+}
+
+// Onboarding wizard steps navigation
+function nextOnboardingStep(step) {
+  // Validate step 1 credentials before continuing
+  if (step === 2 || step === 3) {
+    const name = document.getElementById('reg-name').value.trim();
+    const u = document.getElementById('reg-username').value.trim();
+    const p = document.getElementById('reg-password').value;
+    
+    if (!name || !u || !p) {
+      alert('Please fill out your Name, Username, and Password first.');
+      return;
+    }
+    if (p.length < 6) {
+      alert('Password must be at least 6 characters long.');
+      return;
+    }
+  }
+
+  // Update DOM views
+  document.querySelectorAll('.onboarding-step').forEach(el => el.classList.remove('active'));
+  const targetStep = document.getElementById(`onboarding-step-${step}`);
+  if (targetStep) targetStep.classList.add('active');
+
+  // Update Indicators
+  document.querySelectorAll('.step-dot').forEach(el => el.classList.remove('active'));
+  for (let i = 1; i <= step; i++) {
+    const dot = document.getElementById(`dot-step-${i}`);
+    if (dot) dot.classList.add('active');
+  }
+
+  // Update Progress line
+  const fill = document.getElementById('onboarding-progress-fill');
+  if (fill) {
+    const widthPct = step === 1 ? 33.33 : step === 2 ? 66.66 : 100;
+    fill.style.width = `${widthPct}%`;
   }
 }
 
@@ -394,9 +449,13 @@ function updateWellbeingUI() {
   const minutes = Math.floor((stats.screenTimeSec % 3600) / 60);
   const screenTimeStr = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 
+  const stepsGoal = stats.stepsGoal || 8000;
+  const waterGoal = stats.waterGoal || 8;
+  const limitMin = stats.screentimeLimitMin || 120;
+
   document.getElementById('mini-screentime').textContent = screenTimeStr;
   document.getElementById('mini-steps').textContent = stats.steps.toLocaleString();
-  document.getElementById('mini-water').textContent = `${stats.waterGlasses} / 8`;
+  document.getElementById('mini-water').textContent = `${stats.waterGlasses} / ${waterGoal}`;
 
   const healthSteps = document.getElementById('health-steps-val');
   const healthStepsProg = document.getElementById('health-steps-progress');
@@ -406,15 +465,38 @@ function updateWellbeingUI() {
 
   if (healthSteps) healthSteps.innerHTML = `${stats.steps.toLocaleString()} <span class="unit">steps</span>`;
   if (healthStepsProg) {
-    const stepsPct = Math.min(100, (stats.steps / 8000) * 100);
+    const stepsPct = Math.min(100, (stats.steps / stepsGoal) * 100);
     healthStepsProg.style.width = `${stepsPct}%`;
   }
-  if (healthWater) healthWater.innerHTML = `${stats.waterGlasses} / 8 <span class="unit">glasses</span>`;
+  const stepsGoalText = document.querySelector('.metric-goal');
+  if (stepsGoalText && stepsGoalText.textContent.includes('Goal:')) {
+    stepsGoalText.textContent = `Goal: ${stepsGoal.toLocaleString()} steps (Custom Onboarding target)`;
+  }
+
+  if (healthWater) healthWater.innerHTML = `${stats.waterGlasses} / ${waterGoal} <span class="unit">glasses</span>`;
   if (healthWaterProg) {
-    const waterPct = Math.min(100, (stats.waterGlasses / 8) * 100);
+    const waterPct = Math.min(100, (stats.waterGlasses / waterGoal) * 100);
     healthWaterProg.style.width = `${waterPct}%`;
   }
+  const waterGoalText = document.querySelectorAll('.metric-goal')[1];
+  if (waterGoalText && waterGoalText.textContent.includes('Goal:')) {
+    waterGoalText.textContent = `Goal: ${waterGoal} glasses (Custom Onboarding target)`;
+  }
+
   if (healthTime) healthTime.textContent = screenTimeStr;
+
+  const currentMin = stats.screenTimeSec / 60;
+  const strainWarning = document.getElementById('screentime-warning');
+  if (strainWarning) {
+    if (currentMin >= limitMin) {
+      strainWarning.textContent = `⚠️ Max screen session limit reached (${limitMin}m)! Please take a breathing break.`;
+      strainWarning.style.color = 'var(--accent)';
+    } else {
+      const remaining = Math.round(limitMin - currentMin);
+      strainWarning.textContent = `Target limit: ${limitMin} minutes. Next break in ${remaining}m.`;
+      strainWarning.style.color = 'var(--text-muted)';
+    }
+  }
 
   const chWalk = document.getElementById('challenge-walk');
   const chScreen = document.getElementById('challenge-screen');

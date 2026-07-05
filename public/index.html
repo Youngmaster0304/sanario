@@ -98,59 +98,131 @@
           </button>
         </form>
         
-        <!-- Register Form -->
+        <!-- Register Form (Multi-Step Onboarding Wizard) -->
         <form id="form-register" class="auth-form" onsubmit="handleRegister(event)">
           <h2>Join Sanario</h2>
           <p class="form-subtitle">Design your digital growth journey</p>
           
-          <div class="input-group">
-            <label for="reg-name">Full Name</label>
-            <input type="text" id="reg-name" placeholder="e.g., Abhinav Jha" required autocomplete="name">
-          </div>
-          
-          <div class="input-group">
-            <label for="reg-username">Username</label>
-            <input type="text" id="reg-username" placeholder="e.g., abhinav_jha" required autocomplete="username">
-          </div>
-          
-          <div class="input-group">
-            <label for="reg-password">Password</label>
-            <input type="password" id="reg-password" placeholder="Minimum 6 characters" required autocomplete="new-password">
-          </div>
-          
-          <div class="input-group">
-            <label>Select Your Core Focus Areas</label>
-            <div class="interests-grid">
-              <label class="interest-checkbox-label">
-                <input type="checkbox" name="reg-interests" value="Productivity" checked>
-                <span>Productivity</span>
-              </label>
-              <label class="interest-checkbox-label">
-                <input type="checkbox" name="reg-interests" value="Coding" checked>
-                <span>Coding</span>
-              </label>
-              <label class="interest-checkbox-label">
-                <input type="checkbox" name="reg-interests" value="Fitness">
-                <span>Fitness</span>
-              </label>
-              <label class="interest-checkbox-label">
-                <input type="checkbox" name="reg-interests" value="Startups">
-                <span>Startups</span>
-              </label>
-              <label class="interest-checkbox-label">
-                <input type="checkbox" name="reg-interests" value="Mental Wellness">
-                <span>Mental Wellness</span>
-              </label>
-              <label class="interest-checkbox-label">
-                <input type="checkbox" name="reg-interests" value="Nutrition">
-                <span>Nutrition</span>
-              </label>
+          <!-- Onboarding Progress Bar -->
+          <div class="onboarding-progress-container">
+            <div class="onboarding-progress-bar" id="onboarding-progress-fill" style="width: 33.33%;"></div>
+            <div class="onboarding-step-indicators">
+              <span class="step-dot active" id="dot-step-1">1</span>
+              <span class="step-dot" id="dot-step-2">2</span>
+              <span class="step-dot" id="dot-step-3">3</span>
             </div>
           </div>
           
-          <div id="register-error" class="error-msg hidden"></div>
+          <!-- STEP 1: Account Creation -->
+          <div class="onboarding-step active" id="onboarding-step-1">
+            <h3 class="onboarding-step-title">Create Account</h3>
+            
+            <div class="input-group">
+              <label for="reg-name">Full Name</label>
+              <input type="text" id="reg-name" placeholder="e.g., Abhinav Jha" autocomplete="name">
+            </div>
+            
+            <div class="input-group">
+              <label for="reg-username">Username</label>
+              <input type="text" id="reg-username" placeholder="e.g., abhinav_jha" autocomplete="username">
+            </div>
+            
+            <div class="input-group">
+              <label for="reg-password">Password</label>
+              <input type="password" id="reg-password" placeholder="Minimum 6 characters" autocomplete="new-password">
+            </div>
+            
+            <div class="onboarding-actions" style="margin-top: 15px;">
+              <button type="button" class="btn btn-primary full-width-btn" onclick="nextOnboardingStep(2)">Continue to Step 2</button>
+            </div>
+          </div>
           
-          <button type="submit" class="btn btn-primary auth-submit-btn">Create Account</button>
+          <!-- STEP 2: Focus & Intention -->
+          <div class="onboarding-step" id="onboarding-step-2">
+            <h3 class="onboarding-step-title">Personalized Focus</h3>
+            
+            <div class="input-group">
+              <label>Select Your Core Focus Areas</label>
+              <div class="interests-grid">
+                <label class="interest-checkbox-label">
+                  <input type="checkbox" name="reg-interests" value="Productivity" checked>
+                  <span>Productivity</span>
+                </label>
+                <label class="interest-checkbox-label">
+                  <input type="checkbox" name="reg-interests" value="Coding" checked>
+                  <span>Coding</span>
+                </label>
+                <label class="interest-checkbox-label">
+                  <input type="checkbox" name="reg-interests" value="Fitness">
+                  <span>Fitness</span>
+                </label>
+                <label class="interest-checkbox-label">
+                  <input type="checkbox" name="reg-interests" value="Startups">
+                  <span>Startups</span>
+                </label>
+                <label class="interest-checkbox-label">
+                  <input type="checkbox" name="reg-interests" value="Mental Wellness">
+                  <span>Mental Wellness</span>
+                </label>
+                <label class="interest-checkbox-label">
+                  <input type="checkbox" name="reg-interests" value="Nutrition">
+                  <span>Nutrition</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="input-group">
+              <label for="reg-growth-vibe">What is your primary growth goal?</label>
+              <input type="text" id="reg-growth-vibe" placeholder="e.g. Build career skills, balance screen time, run a 5k...">
+            </div>
+            
+            <div class="onboarding-actions split-actions" style="margin-top: 15px; display: flex; gap: var(--spacing-sm);">
+              <button type="button" class="btn btn-secondary full-width-btn" onclick="nextOnboardingStep(1)">Back</button>
+              <button type="button" class="btn btn-primary full-width-btn" onclick="nextOnboardingStep(3)">Continue to Step 3</button>
+            </div>
+          </div>
+          
+          <!-- STEP 3: Wellness Targets -->
+          <div class="onboarding-step" id="onboarding-step-3">
+            <h3 class="onboarding-step-title">Daily Wellness Targets</h3>
+            
+            <div class="input-group">
+              <label for="reg-step-goal">Daily Step Goal (WHO recommends 8k)</label>
+              <select id="reg-step-goal" class="select-target" style="width: 100%; padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border); background-color: var(--bg-app); color: var(--text-main);">
+                <option value="5000">5,000 steps</option>
+                <option value="8000" selected>8,000 steps</option>
+                <option value="10000">10,000 steps</option>
+                <option value="12000">12,000 steps</option>
+              </select>
+            </div>
+            
+            <div class="input-group">
+              <label for="reg-water-goal">Daily Hydration Target</label>
+              <select id="reg-water-goal" class="select-target" style="width: 100%; padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border); background-color: var(--bg-app); color: var(--text-main);">
+                <option value="6">6 glasses (1.5 Liters)</option>
+                <option value="8" selected>8 glasses (2 Liters)</option>
+                <option value="10">10 glasses (2.5 Liters)</option>
+                <option value="12">12 glasses (3 Liters)</option>
+              </select>
+            </div>
+            
+            <div class="input-group">
+              <label for="reg-screentime-limit">Max Daily Screen Session Limit</label>
+              <select id="reg-screentime-limit" class="select-target" style="width: 100%; padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border); background-color: var(--bg-app); color: var(--text-main);">
+                <option value="60">1 Hour</option>
+                <option value="120" selected>2 Hours</option>
+                <option value="180">3 Hours</option>
+                <option value="240">4 Hours</option>
+              </select>
+            </div>
+            
+            <div id="register-error" class="error-msg hidden"></div>
+            
+            <div class="onboarding-actions split-actions" style="margin-top: 15px; display: flex; gap: var(--spacing-sm);">
+              <button type="button" class="btn btn-secondary full-width-btn" onclick="nextOnboardingStep(2)">Back</button>
+              <button type="submit" class="btn btn-primary full-width-btn">Complete Setup</button>
+            </div>
+          </div>
         </form>
       </div>
     </div>
