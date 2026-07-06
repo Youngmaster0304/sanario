@@ -21,24 +21,24 @@ Instead of maximizing screen time, digital addiction, and infinite scrolling, Sa
 
 ```mermaid
 graph TD
-  subgraph Client [Client Tier (Frontend)]
+  subgraph Client ["Client Tier (Frontend)"]
     UI["Web Browser (HTML/CSS/JS)"]
     FB_SDK["Firebase Client SDK"]
   end
 
-  subgraph Auth [Auth Identity Tier]
+  subgraph Auth ["Auth Identity Tier"]
     FB_Auth["Firebase Auth Service"]
     Google_ID["Google OAuth Identity Certs"]
   end
 
-  subgraph Application [Application Server (Vercel)]
+  subgraph Application ["Application Server (Vercel)"]
     Express["Express.js Server Engine"]
     JWT_Module["JWT Verification & Session Engine"]
     ML_Coach["Intent Router & AI Coach Engine"]
     ML_Feed["Two-Tower Recommender Engine"]
   end
 
-  subgraph Database [Storage Tier (Supabase)]
+  subgraph Database ["Storage Tier (Supabase)"]
     Pooler["Supavisor Connection Pooler (Port 6543)"]
     Postgres["PostgreSQL Database"]
   end
