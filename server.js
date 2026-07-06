@@ -165,6 +165,78 @@ app.post('/api/auth/google-login', async (req, res) => {
   } catch (err) {
     console.error('Google Sign-in Auth Error:', err);
     res.status(400).json({ error: err.message || 'Google Auth Verification failed.' });
+});
+
+let firebasePublicKeys = {};
+let keysExpiry = 0;
+
+async function getFirebasePublicKeys() {
+  if (Date.now() < keysExpiry && Object.keys(firebasePublicKeys).length > 0) {
+    return firebasePublicKeys;
+  }
+  return new Promise((resolve) => {
+    https.get('https://www.googleapis.com/robot/v1/metadata/x509/securetoken-system@system.gserviceaccount.com', (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          firebasePublicKeys = JSON.parse(data);
+          keysExpiry = Date.now() + 6 * 60 * 60 * 1000; // Cache 6 hours
+          resolve(firebasePublicKeys);
+        } catch (e) {
+          resolve({});
+        }
+      });
+    }).on('error', (err) => {
+      console.error('Failed to fetch Firebase public keys:', err);
+      resolve({});
+    });
+  });
+}
+
+async function verifyFirebaseIdToken(token) {
+  const keys = await getFirebasePublicKeys();
+  const decodedHeader = jwt.decode(token, { complete: true });
+  if (!decodedHeader || !decodedHeader.header.kid) {
+    throw new Error('Invalid Firebase token header.');
+  }
+  const certificate = keys[decodedHeader.header.kid];
+  if (!certificate) {
+    throw new Error('Firebase public key expired or not found.');
+  }
+  const projectId = 'sanario';
+  return jwt.verify(token, certificate, {
+    audience: projectId,
+    issuer: `https://securetoken.google.com/${projectId}`,
+    algorithms: ['RS256']
+  });
+}
+
+app.post('/api/auth/firebase-login', async (req, res) => {
+  const { idToken, email, name, profilePic, phone } = req.body;
+  if (!idToken) {
+    return res.status(400).json({ error: 'Firebase ID Token is required.' });
+  }
+
+  try {
+    const decodedToken = await verifyFirebaseIdToken(idToken);
+    
+    let user;
+    if (decodedToken.phone_number || phone) {
+      const phoneNumber = decodedToken.phone_number || phone;
+      user = await db.findOrCreatePhoneUser(phoneNumber);
+    } else {
+      const userEmail = decodedToken.email || email;
+      const userName = decodedToken.name || name || 'Google User';
+      const userPic = decodedToken.picture || profilePic;
+      user = await db.findOrCreateGoogleUser(userEmail, userName, userPic);
+    }
+
+    const token = generateUserToken(user);
+    res.json({ success: true, user, token });
+  } catch (err) {
+    console.error('Firebase Auth Verification failed:', err);
+    res.status(401).json({ error: 'Authentication failed: ' + err.message });
   }
 });
 

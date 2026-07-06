@@ -17,8 +17,9 @@
   <!-- Material Icons for Instagram-style Nav -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
-  <!-- Official Google Identity Services SDK for Production Sign-In -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Firebase Compat App & Auth SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="styles.css">
@@ -107,6 +108,9 @@
         <form id="form-phone-login" class="auth-form" onsubmit="handleVerifyOTP(event)" style="display: none;">
           <h2>Phone Verification</h2>
           <p class="form-subtitle">Log in instantly with SMS OTP</p>
+          
+          <!-- Invisible Firebase Recaptcha Container -->
+          <div id="recaptcha-container"></div>
           
           <!-- STEP 1: Input Phone Number -->
           <div id="phone-input-step">

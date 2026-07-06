@@ -27,6 +27,19 @@ let state = {
 
 const API_BASE = '/api';
 
+// --- Firebase Initialization ---
+const firebaseConfig = {
+  apiKey: "AIzaSyDapwBghLqetmI1B6ZRr_TJuND6LdGxEeU",
+  authDomain: "sanario.firebaseapp.com",
+  projectId: "sanario",
+  storageBucket: "sanario.firebasestorage.app",
+  messagingSenderId: "531380890083",
+  appId: "1:531380890083:web:b57d45179a4325a80f18d6",
+  measurementId: "G-QS4QTY1TDR"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
 // --- Helper: API Calls ---
 async function apiCall(endpoint, method = 'GET', data = null) {
   const headers = {
@@ -119,49 +132,34 @@ function setupScreentimeTicker() {
 }
 
 // --- Google Auth Popup (Simulated Dev popup fallback) ---
-function openGoogleLoginPopup() {
-  // If official Google prompt is configured, try triggering it
-  if (typeof google !== 'undefined' && google.accounts.id && false) {
-    google.accounts.id.prompt();
-    return;
-  }
+async function openGoogleLoginPopup() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const errDiv = document.getElementById('login-error');
+  if (errDiv) errDiv.classList.add('hidden');
 
-  const w = 500;
-  const h = 600;
-  const left = (screen.width/2) - (w/2);
-  const top = (screen.height/2) - (h/2);
-  
-  window.open(
-    'google-oauth.html',
-    'GoogleSignIn',
-    `width=${w},height=${h},top=${top},left=${left},status=no,resizable=no`
-  );
-}
-
-// Listen for message from Google OAuth popup window (Dev fallback)
-window.addEventListener('message', async (event) => {
-  if (event.origin !== window.location.origin) return;
-
-  if (event.data && event.data.type === 'google-auth-success') {
-    const { email, name, profilePic } = event.data.data;
-    const errDiv = document.getElementById('login-error');
-    if (errDiv) errDiv.classList.add('hidden');
-
-    try {
-      const res = await apiCall('/auth/google-login', 'POST', { email, name, profilePic });
-      if (res.success) {
-        loginUser(res.user, res.token);
-      }
-    } catch (err) {
-      if (errDiv) {
-        errDiv.textContent = 'Google Sign-in failed: ' + err.message;
-        errDiv.classList.remove('hidden');
-      } else {
-        alert('Google Sign-in failed: ' + err.message);
-      }
+  try {
+    const result = await auth.signInWithPopup(provider);
+    const user = result.user;
+    const idToken = await user.getIdToken();
+    
+    const res = await apiCall('/auth/firebase-login', 'POST', {
+      idToken,
+      email: user.email,
+      name: user.displayName,
+      profilePic: user.photoURL
+    });
+    if (res.success) {
+      loginUser(res.user, res.token);
+    }
+  } catch (error) {
+    if (errDiv) {
+      errDiv.textContent = 'Google Sign-in failed: ' + error.message;
+      errDiv.classList.remove('hidden');
+    } else {
+      alert('Google Sign-in failed: ' + error.message);
     }
   }
-});
+}
 
 // --- Auth Handling ---
 async function checkAutoLogin() {
@@ -274,54 +272,76 @@ function togglePhoneAuthSection(showPhone) {
   }
 }
 
+let recaptchaVerifier = null;
+let confirmationResult = null;
+
 async function sendPhoneOTP() {
   const phoneInput = document.getElementById('login-phone').value.trim();
   const errDiv = document.getElementById('phone-login-error');
   errDiv.classList.add('hidden');
 
   if (!phoneInput) {
-    errDiv.textContent = 'Please enter a valid phone number.';
+    errDiv.textContent = 'Please enter a valid phone number with country code (e.g., +919876543210).';
     errDiv.classList.remove('hidden');
     return;
   }
 
   try {
-    const res = await apiCall('/auth/phone-send-otp', 'POST', { phone: phoneInput });
-    if (res.success) {
-      // Toggle to step 2 (OTP code input)
-      document.getElementById('phone-input-step').classList.add('hidden');
-      document.getElementById('phone-otp-step').classList.remove('hidden');
-
-      // Display the simulated OTP banner so they can test it easily!
-      const hintBanner = document.getElementById('otp-hint-banner');
-      if (hintBanner) {
-        hintBanner.textContent = `Simulated SMS OTP Code: ${res.simulatedCode}`;
-        hintBanner.style.display = 'block';
-      }
+    if (!recaptchaVerifier) {
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible'
+      });
     }
+
+    const confirmation = await auth.signInWithPhoneNumber(phoneInput, recaptchaVerifier);
+    confirmationResult = confirmation;
+
+    // Toggle to step 2 (OTP code input)
+    document.getElementById('phone-input-step').classList.add('hidden');
+    document.getElementById('phone-otp-step').classList.remove('hidden');
   } catch (err) {
     errDiv.textContent = err.message;
     errDiv.classList.remove('hidden');
+    if (recaptchaVerifier) {
+      try {
+        recaptchaVerifier.clear();
+        recaptchaVerifier = null;
+      } catch(e){}
+    }
   }
 }
 
 async function handleVerifyOTP(event) {
   event.preventDefault();
-  const phone = document.getElementById('login-phone').value.trim();
   const code = document.getElementById('login-otp').value.trim();
   const errDiv = document.getElementById('phone-login-error');
   errDiv.classList.add('hidden');
 
-  if (!phone || !code) {
+  if (!code) {
     errDiv.textContent = 'Verification code is required.';
     errDiv.classList.remove('hidden');
     return;
   }
 
+  if (!confirmationResult) {
+    errDiv.textContent = 'No active confirmation session found. Please send code again.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+
   try {
-    const res = await apiCall('/auth/phone-verify-otp', 'POST', { phone, code });
+    const result = await confirmationResult.confirm(code);
+    const user = result.user;
+    const idToken = await user.getIdToken();
+
+    // Call server to login or create matching postgres user record
+    const res = await apiCall('/auth/firebase-login', 'POST', {
+      idToken,
+      phone: user.phoneNumber,
+      name: user.displayName || `User ${user.phoneNumber.slice(-4)}`
+    });
+
     if (res.success) {
-      // Successful login/register!
       loginUser(res.user, res.token);
       resetPhoneOTPForm();
     }
@@ -340,6 +360,13 @@ function resetPhoneOTPForm() {
     hintBanner.style.display = 'none';
     hintBanner.textContent = '';
   }
+  if (recaptchaVerifier) {
+    try {
+      recaptchaVerifier.clear();
+      recaptchaVerifier = null;
+    } catch(e){}
+  }
+  confirmationResult = null;
 }
 
 async function handleRegister(event) {
