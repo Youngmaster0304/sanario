@@ -185,7 +185,7 @@ async function getFirebasePublicKeys() {
     return firebasePublicKeys;
   } catch (err) {
     console.error('Failed to fetch Firebase public keys:', err);
-    return {};
+    throw new Error('Failed to retrieve Firebase public keys: ' + err.message);
   }
 }
 
@@ -197,7 +197,8 @@ async function verifyFirebaseIdToken(token) {
   }
   const certificate = keys[decodedHeader.header.kid];
   if (!certificate) {
-    throw new Error('Firebase public key expired or not found.');
+    const availableKeys = Object.keys(keys).join(', ');
+    throw new Error(`Firebase public key (${decodedHeader.header.kid}) not found in active keys (${availableKeys || 'none loaded'}).`);
   }
   const projectId = 'sanario';
   return jwt.verify(token, certificate, {
