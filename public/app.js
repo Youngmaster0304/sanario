@@ -287,11 +287,15 @@ async function sendPhoneOTP() {
   }
 
   try {
-    if (!recaptchaVerifier) {
-      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        'size': 'invisible'
-      });
+    // Clear reCAPTCHA DOM to prevent "already rendered" errors on retries
+    const container = document.getElementById('recaptcha-container');
+    if (container) {
+      container.innerHTML = '';
     }
+
+    recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      'size': 'invisible'
+    });
 
     const confirmation = await auth.signInWithPhoneNumber(phoneInput, recaptchaVerifier);
     confirmationResult = confirmation;
@@ -305,8 +309,8 @@ async function sendPhoneOTP() {
     if (recaptchaVerifier) {
       try {
         recaptchaVerifier.clear();
-        recaptchaVerifier = null;
       } catch(e){}
+      recaptchaVerifier = null;
     }
   }
 }
