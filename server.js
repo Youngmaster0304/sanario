@@ -175,24 +175,18 @@ async function getFirebasePublicKeys() {
   if (Date.now() < keysExpiry && Object.keys(firebasePublicKeys).length > 0) {
     return firebasePublicKeys;
   }
-  return new Promise((resolve) => {
-    https.get('https://www.googleapis.com/robot/v1/metadata/x509/securetoken-system@system.gserviceaccount.com', (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          firebasePublicKeys = JSON.parse(data);
-          keysExpiry = Date.now() + 6 * 60 * 60 * 1000; // Cache 6 hours
-          resolve(firebasePublicKeys);
-        } catch (e) {
-          resolve({});
-        }
-      });
-    }).on('error', (err) => {
-      console.error('Failed to fetch Firebase public keys:', err);
-      resolve({});
-    });
-  });
+  try {
+    const res = await fetch('https://www.googleapis.com/robot/v1/metadata/x509/securetoken-system@system.gserviceaccount.com');
+    if (!res.ok) {
+      throw new Error(`Failed to fetch public keys, status: ${res.status}`);
+    }
+    firebasePublicKeys = await res.json();
+    keysExpiry = Date.now() + 6 * 60 * 60 * 1000; // Cache 6 hours
+    return firebasePublicKeys;
+  } catch (err) {
+    console.error('Failed to fetch Firebase public keys:', err);
+    return {};
+  }
 }
 
 async function verifyFirebaseIdToken(token) {
