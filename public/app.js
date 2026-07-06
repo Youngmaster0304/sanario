@@ -1589,26 +1589,57 @@ function renderFeedFiltered(filteredPosts) {
   });
 }
 
-async function promptChangeAvatar() {
-  const currentUrl = state.currentUser.profile_pic || state.currentUser.profilePic || '';
-  const newUrl = prompt("Enter the URL of your new profile picture/avatar:", currentUrl);
-  if (newUrl === null) return; // user cancelled
+function triggerAvatarUpload() {
+  document.getElementById('avatar-file-input').click();
+}
 
-  const cleanUrl = newUrl.trim();
-  if (!cleanUrl) {
-    alert("Please enter a valid image URL.");
+async function handleAvatarUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    alert('Please select a valid image file.');
     return;
   }
 
-  try {
-    const res = await apiCall('/user/update-avatar', 'POST', { profilePic: cleanUrl });
-    if (res.success) {
-      state.currentUser.profile_pic = cleanUrl;
-      state.currentUser.profilePic = cleanUrl;
-      updateUserProfileUI();
-      alert("Profile picture updated successfully!");
-    }
-  } catch (err) {
-    alert("Failed to update profile picture: " + err.message);
-  }
+  // Display loading status or state to user
+  const uploadButton = event.target.previousElementSibling;
+  const originalHTML = uploadButton.innerHTML;
+  uploadButton.innerHTML = `<span class="material-icons animate-spin" style="font-size: 16px;">sync</span>`;
+  uploadButton.disabled = true;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = async function() {
+      // Create canvas to resize image to 150x150 (perfect avatar dimensions)
+      const canvas = document.createElement('canvas');
+      canvas.width = 150;
+      canvas.height = 150;
+      const ctx = canvas.getContext('2d');
+
+      // Draw resized image
+      ctx.drawImage(img, 0, 0, 150, 150);
+
+      // Convert to compressed jpeg base64 (maintains very small footprint)
+      const base64Str = canvas.toDataURL('image/jpeg', 0.85);
+
+      try {
+        const res = await apiCall('/user/update-avatar', 'POST', { profilePic: base64Str });
+        if (res.success) {
+          state.currentUser.profile_pic = base64Str;
+          state.currentUser.profilePic = base64Str;
+          updateUserProfileUI();
+          alert("Profile picture uploaded and updated successfully!");
+        }
+      } catch (err) {
+        alert("Failed to upload profile picture: " + err.message);
+      } finally {
+        uploadButton.innerHTML = originalHTML;
+        uploadButton.disabled = false;
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
