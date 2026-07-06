@@ -165,6 +165,7 @@ app.post('/api/auth/google-login', async (req, res) => {
   } catch (err) {
     console.error('Google Sign-in Auth Error:', err);
     res.status(400).json({ error: err.message || 'Google Auth Verification failed.' });
+  }
 });
 
 let firebasePublicKeys = {};
