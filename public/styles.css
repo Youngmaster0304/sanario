@@ -2044,6 +2044,17 @@ button, input, select, textarea {
 }
 
 @media (max-width: 768px) {
+  .auth-card {
+    grid-template-columns: 1fr;
+    width: 100%;
+    margin: 10px;
+    border-radius: var(--radius-md);
+  }
+  
+  .auth-brand-pane {
+    display: none !important;
+  }
+
   .app-layout {
     grid-template-columns: 1fr;
     padding-bottom: 70px; /* Space for bottom nav */
