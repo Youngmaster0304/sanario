@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SANARIO CLIENT APPLICATION ENGINE
+   SANAIRO CLIENT APPLICATION ENGINE
    ========================================================================== */
 
 // --- Global Application State ---
@@ -46,7 +46,7 @@ async function apiCall(endpoint, method = 'GET', data = null) {
     'Content-Type': 'application/json'
   };
   
-  const token = localStorage.getItem('sanario_jwt_token');
+  const token = localStorage.getItem('sanairo_jwt_token');
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
@@ -163,8 +163,8 @@ async function openGoogleLoginPopup() {
 
 // --- Auth Handling ---
 async function checkAutoLogin() {
-  const cachedToken = localStorage.getItem('sanario_jwt_token');
-  const cachedUserId = localStorage.getItem('sanario_user_id');
+  const cachedToken = localStorage.getItem('sanairo_jwt_token');
+  const cachedUserId = localStorage.getItem('sanairo_user_id');
   
   if (cachedToken || cachedUserId) {
     try {
@@ -179,8 +179,8 @@ async function checkAutoLogin() {
       if (data.success) {
         loginUser(data.user, cachedToken);
       } else {
-        localStorage.removeItem('sanario_jwt_token');
-        localStorage.removeItem('sanario_user_id');
+        localStorage.removeItem('sanairo_jwt_token');
+        localStorage.removeItem('sanairo_user_id');
         showAuthScreen();
       }
     } catch (e) {
@@ -465,9 +465,9 @@ function nextOnboardingStep(step) {
 function loginUser(user, token) {
   state.currentUser = user;
   if (token) {
-    localStorage.setItem('sanario_jwt_token', token);
+    localStorage.setItem('sanairo_jwt_token', token);
   }
-  localStorage.setItem('sanario_user_id', user.id);
+  localStorage.setItem('sanairo_user_id', user.id);
   
   // Set UI elements
   document.getElementById('auth-container').classList.add('hidden');
@@ -486,8 +486,8 @@ function loginUser(user, token) {
 
 function handleLogout() {
   state.currentUser = null;
-  localStorage.removeItem('sanario_jwt_token');
-  localStorage.removeItem('sanario_user_id');
+  localStorage.removeItem('sanairo_jwt_token');
+  localStorage.removeItem('sanairo_user_id');
   clearInterval(state.screentimeTicker);
   showAuthScreen();
 }
@@ -996,7 +996,7 @@ function trackReelsDoomscrolling() {
       if (activeVid) activeVid.pause();
 
       setTimeout(() => {
-        alert('📵 Digital Health Break: You have watched 3 short video reels. To prevent addictive scrolling and protect focus, Sanario requests a 1-minute breathing reset.');
+        alert('📵 Digital Health Break: You have watched 3 short video reels. To prevent addictive scrolling and protect focus, Sanairo requests a 1-minute breathing reset.');
         state.reelsViewedCount = 0; // reset
         triggerBreathingSession();
       }, 500);

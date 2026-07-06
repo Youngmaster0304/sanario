@@ -41,7 +41,7 @@ class AICoach {
 - 10:35 - 11:00: Mindfulness / Hydration break (2 glasses)
 
 **☀️ Afternoon Administration**
-- 13:00 - 14:00: General communications, emails, and checking Sanario Communities
+- 13:00 - 14:00: General communications, emails, and checking Sanairo Communities
 - 14:00 - 15:00: Skill development (Coding/Reading)
 
 **🌇 Evening Integration**
@@ -80,7 +80,7 @@ Do you want to log this stretch? Completing it will earn you **10 XP**!`;
       default:
         reply = `Hello ${username}. I'm analyzing your current digital habits. You're doing great keeping your screen time intentional. 
         
-Remember, Sanario is designed to help you build habits outside the screen. If you feel like scrolling compulsively, try starting a **Deep Work Timer** or jumping into a learning community like **AI** or **Coding** to collaborate rather than consume. What are you looking to achieve today?`;
+Remember, Sanairo is designed to help you build habits outside the screen. If you feel like scrolling compulsively, try starting a **Deep Work Timer** or jumping into a learning community like **AI** or **Coding** to collaborate rather than consume. What are you looking to achieve today?`;
         break;
     }
 

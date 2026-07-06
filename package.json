@@ -1,7 +1,7 @@
 {
-  "name": "sanario",
+  "name": "sanairo",
   "version": "1.0.0",
-  "description": "Sanario - A Healthy Social Media Ecosystem",
+  "description": "Sanairo - A Healthy Social Media Ecosystem",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

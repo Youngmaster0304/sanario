@@ -1,8 +1,8 @@
-# 🌿 Sanario — A Healthy Social Media Ecosystem
+# 🌿 Sanairo — A Healthy Social Media Ecosystem
 
-Sanario is a next-generation, full-stack digital wellbeing and cognitive growth platform designed to help people use technology intentionally rather than compulsively.
+Sanairo is a next-generation, full-stack digital wellbeing and cognitive growth platform designed to help people use technology intentionally rather than compulsively.
 
-Instead of maximizing screen time, digital addiction, and infinite scrolling, Sanario is engineered to maximize personal growth, physical wellness, and offline well-being.
+Instead of maximizing screen time, digital addiction, and infinite scrolling, Sanairo is engineered to maximize personal growth, physical wellness, and offline well-being.
 
 ---
 
@@ -90,7 +90,7 @@ sequenceDiagram
   Server->>Server: Fetch Google Public Certs & Validate Signature
   Server->>DB: Query User: findOrCreateGoogleUser() / findOrCreatePhoneUser()
   DB-->>Server: Return DB User Object (including XP, settings, goals)
-  Server->>Server: Generate JWT Web Token (Sanario Session)
+  Server->>Server: Generate JWT Web Token (Sanairo Session)
   Server-->>App: Return { success: true, user, token }
   App->>App: Save JWT & User ID in localStorage
   App->>User: Launch Health Dashboard & Onboarding Wizard
@@ -128,18 +128,18 @@ sequenceDiagram
 ### Run with Docker
 1. Build the production image:
    ```bash
-   docker build -t sanario-app .
+   docker build -t sanairo-app .
    ```
 2. Run the container:
    ```bash
-   docker run -p 3000:3000 --env-file .env sanario-app
+   docker run -p 3000:3000 --env-file .env sanairo-app
    ```
 
 ---
 
 ## 🌐 Production Deployment (Vercel)
 
-Sanario is optimized for serverless deployment on **Vercel** connected to **Supabase** for database storage and **Firebase** for secure authentication.
+Sanairo is optimized for serverless deployment on **Vercel** connected to **Supabase** for database storage and **Firebase** for secure authentication.
 
 ### 1. Database Connection (Supabase Pooler)
 Since Vercel's serverless runtime relies on an IPv4 network and new Supabase databases are IPv6-only, you **must use the Supabase Connection Pooler (Supavisor)** on port `6543`.

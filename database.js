@@ -22,7 +22,7 @@ class SQLDatabase {
     } else {
       console.log('Connecting to Local SQLite Database...');
       const sqlite3 = require('sqlite3').verbose();
-      const dbPath = path.join(__dirname, 'sanario.db');
+      const dbPath = path.join(__dirname, 'sanairo.db');
       this.sqliteDb = new sqlite3.Database(dbPath, (err) => {
         if (err) console.error('Failed to open SQLite database:', err);
       });
@@ -244,7 +244,7 @@ class SQLDatabase {
       'post1', 'user2', 'Dr. Elena Rostova', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80', 'The Myth of Context Switching\n\nRecent studies suggest that what we call "multitasking" is actually rapid context switching, which can degrade cognitive performance by up to 40%. The cost isn\'t just in time—it\'s in the depth of thought. Intentionally single-tasking for just 45 minutes can yield better results than 3 hours of fragmented attention. Focus on one goal today and protect your attention.', 'Productivity', true, 'focus-distraction', 'text', '', 15, 0.95, new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
       'post2', 'user3', 'Dev Community', 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&h=150&q=80', 'Clean Code: The Boy Scout Rule\n\n"Always leave the campground cleaner than you found it." If we all check in code that is slightly cleaner than when we checked it out, software rot simply cannot happen. It doesn\'t require massive rewrites—just formatting a messy block, renaming a confusing variable, or breaking down a long function. Clean code builds calm developers!', 'Coding', false, '', 'image', 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=600&q=80', 8, 0.88, new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
       'post3', 'user2', 'Dr. Elena Rostova', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80', '"The digital environment we curate shapes the physical thoughts we have. Unfollow the noise to hear your own signal." Make space for quiet contemplation today. The brain needs idle time to connect disparate ideas into novel creative insights.', 'Mental Wellness', false, '', 'image', 'https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?auto=format&fit=crop&w=600&q=80', 22, 0.92, new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-      'post4', 'user1', 'Abhinav Jha', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', 'Consistency beats intensity. Setting up my 25-minute Deep Work blocks for the day. Sticking to 3 primary goals: Coding the Sanario backend, stretching for 5 minutes, and drinking 3L water. Who is working with me today?', 'Startups', false, '', 'text', '', 4, 0.82, new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString()
+      'post4', 'user1', 'Abhinav Jha', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', 'Consistency beats intensity. Setting up my 25-minute Deep Work blocks for the day. Sticking to 3 primary goals: Coding the Sanairo backend, stretching for 5 minutes, and drinking 3L water. Who is working with me today?', 'Startups', false, '', 'text', '', 4, 0.82, new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString()
     ]);
 
     // Seed Post Valuables
@@ -286,7 +286,7 @@ class SQLDatabase {
     await this.execute(`
       INSERT INTO chats (id, user_id, sender, recipient, message, timestamp) VALUES 
       (?, ?, ?, ?, ?, ?)
-    `, ['msg1', 'user1', 'coach', 'user1', 'Good afternoon. I\'m your Sanario wellness guide. How can we bring more intention to your day?', new Date(Date.now() - 10 * 60 * 1000).toISOString()]);
+    `, ['msg1', 'user1', 'coach', 'user1', 'Good afternoon. I\'m your Sanairo wellness guide. How can we bring more intention to your day?', new Date(Date.now() - 10 * 60 * 1000).toISOString()]);
 
     console.log('SQL Seed completed.');
   }

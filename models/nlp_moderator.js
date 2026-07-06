@@ -97,7 +97,7 @@ class NLPModerator {
         toxic: true,
         score: parseFloat(finalScore.toFixed(3)),
         flags: flags,
-        reason: `Content flagged by Sanario NLP Safety Filter (${flags.join(', ')})`
+        reason: `Content flagged by Sanairo NLP Safety Filter (${flags.join(', ')})`
       };
     }
 

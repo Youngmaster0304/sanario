@@ -1,5 +1,5 @@
 # ==========================================================================
-# SANARIO PRODUCTION DOCKERFILE
+# SANAIRO PRODUCTION DOCKERFILE
 # Multi-stage/lightweight Node.js container setup
 # ==========================================================================
 

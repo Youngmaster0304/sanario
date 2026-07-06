@@ -1,6 +1,6 @@
 node_modules/
 .env
-sanario.db
+sanairo.db
 db.json
 .git/
 .gitignore
