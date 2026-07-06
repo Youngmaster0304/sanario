@@ -619,6 +619,11 @@ class SQLDatabase {
     await this.execute(`DELETE FROM phone_otps WHERE phone = ?`, [phone]);
     return true;
   }
+
+  async updateUserAvatar(userId, profilePic) {
+    await this.execute(`UPDATE users SET profile_pic = ? WHERE id = ?`, [profilePic, userId]);
+    return true;
+  }
 }
 
 module.exports = new SQLDatabase();

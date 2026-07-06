@@ -553,11 +553,26 @@ app.post('/api/chat/:recipient', authUser, async (req, res) => {
   }
 });
 
+// Update profile picture / avatar
+app.post('/api/user/update-avatar', authUser, async (req, res) => {
+  const { profilePic } = req.body;
+  if (!profilePic) {
+    return res.status(400).json({ error: 'Profile picture URL is required.' });
+  }
+  try {
+    await db.updateUserAvatar(req.user.id, profilePic);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Failed to update avatar:', err);
+    res.status(500).json({ error: 'Failed to update profile picture.' });
+  }
+});
+
 // Start Server
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`====================================================`);
-    console.log(` Sanario Full-Stack Server Running on Port ${PORT}`);
+    console.log(` Sanairo Full-Stack Server Running on Port ${PORT}`);
     console.log(` Access Local App: http://localhost:${PORT}`);
     console.log(`====================================================`);
   });

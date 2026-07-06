@@ -543,8 +543,10 @@ function updateUserProfileUI() {
   const user = state.currentUser;
   if (!user) return;
 
+  const pic = user.profile_pic || user.profilePic || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80';
+
   // Right Sidebar headers
-  document.getElementById('right-user-pic').src = user.profilePic;
+  document.getElementById('right-user-pic').src = pic;
   document.getElementById('right-user-name').textContent = user.name;
   document.getElementById('right-user-xp').textContent = user.xp;
   document.getElementById('right-user-badge').innerHTML = `${user.badge} • <span id="right-user-xp">${user.xp}</span> XP`;
@@ -557,7 +559,7 @@ function updateUserProfileUI() {
   const xpProgress = document.getElementById('profile-xp-progress');
   const badgeVal = document.getElementById('profile-badge-val');
 
-  if (avatar) avatar.src = user.profilePic;
+  if (avatar) avatar.src = pic;
   if (nameVal) nameVal.textContent = user.name;
   if (tagVal) tagVal.textContent = `@${user.username}`;
   if (xpVal) xpVal.textContent = user.xp;
@@ -1585,4 +1587,28 @@ function renderFeedFiltered(filteredPosts) {
     `;
     container.appendChild(card);
   });
+}
+
+async function promptChangeAvatar() {
+  const currentUrl = state.currentUser.profile_pic || state.currentUser.profilePic || '';
+  const newUrl = prompt("Enter the URL of your new profile picture/avatar:", currentUrl);
+  if (newUrl === null) return; // user cancelled
+
+  const cleanUrl = newUrl.trim();
+  if (!cleanUrl) {
+    alert("Please enter a valid image URL.");
+    return;
+  }
+
+  try {
+    const res = await apiCall('/user/update-avatar', 'POST', { profilePic: cleanUrl });
+    if (res.success) {
+      state.currentUser.profile_pic = cleanUrl;
+      state.currentUser.profilePic = cleanUrl;
+      updateUserProfileUI();
+      alert("Profile picture updated successfully!");
+    }
+  } catch (err) {
+    alert("Failed to update profile picture: " + err.message);
+  }
 }
