@@ -176,7 +176,7 @@ async function getFirebasePublicKeys() {
     return firebasePublicKeys;
   }
   try {
-    const res = await fetch('https://www.googleapis.com/robot/v1/metadata/x509/securetoken-system@system.gserviceaccount.com');
+    const res = await fetch('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com');
     if (!res.ok) {
       throw new Error(`Failed to fetch public keys, status: ${res.status}`);
     }
