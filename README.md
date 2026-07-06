@@ -24,7 +24,7 @@ Instead of maximizing screen time, digital addiction, and infinite scrolling, Sa
 * **Database**: Dual-engine relational SQL adapter supporting:
   * **SQLite** (Local fallback development)
   * **PostgreSQL** (Production deployment)
-* **Auth**: JSON Web Tokens (JWT) for secure session headers & official Google Identity Services SDK for production sign-in.
+* **Auth**: Firebase Authentication SDK (Google Sign-In & Phone SMS OTP) + JSON Web Tokens (JWT) for secure backend session headers.
 * **ML Engines**: Native, client-side/server-side numerical and lexical vector models (Two-Tower, Intent Router, Wellness Evaluator, NLP Moderator).
 
 ---
@@ -56,14 +56,26 @@ Instead of maximizing screen time, digital addiction, and infinite scrolling, Sa
 
 ---
 
-## 🌐 Production Deployment
+## 🌐 Production Deployment (Vercel)
 
-Sanario is configured according to Twelve-Factor app principles and is ready for containerized cloud deployment (Render, Heroku, Railway):
+Sanario is optimized for serverless deployment on **Vercel** connected to **Supabase** for database storage and **Firebase** for secure authentication.
 
-1. Link this repository to your hosting provider.
-2. Provision a hosted **PostgreSQL** database (e.g. Neon, Supabase, Render DB).
-3. Set the environment variables in your deployment dashboard:
-   * `NODE_ENV=production`
-   * `DATABASE_URL=your_postgres_connection_uri`
-   * `JWT_SECRET=your_secure_session_key`
-   * `GOOGLE_CLIENT_ID=your_google_client_id_from_cloud_console`
+### 1. Database Connection (Supabase Pooler)
+Since Vercel's serverless runtime relies on an IPv4 network and new Supabase databases are IPv6-only, you **must use the Supabase Connection Pooler (Supavisor)** on port `6543`.
+* Set your environment variable:
+  ```text
+  DATABASE_URL=postgresql://postgres.[YOUR_PROJECT_REF]:[PASSWORD]@[REGION_POOLER_HOST]:6543/postgres?pgbouncer=true
+  ```
+  *Ensure special characters in your password (like `@`) are URL-encoded (e.g. `@` -> `%40`).*
+
+### 2. Environment Variables on Vercel
+* `NODE_ENV=production`
+* `DATABASE_URL=your_encoded_supabase_pooler_connection_string`
+* `JWT_SECRET=your_secure_session_key`
+
+### 3. Authentication (Firebase Auth)
+1. Register a web app in your Firebase project.
+2. Go to **Authentication > Sign-in method** and enable:
+   * **Google**
+   * **Phone**
+3. In the Firebase Auth settings, add your Vercel domains (e.g. `sanario-platform.vercel.app`) under **Authorized domains** to enable Google popup redirects and prevent reCAPTCHA errors.
