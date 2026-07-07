@@ -918,63 +918,85 @@ button, input, select, textarea {
 /* Stories / Intention Row */
 .stories-row {
   display: flex;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md) var(--spacing-xs);
+  gap: 12px;
+  padding: 12px 4px;
   overflow-x: auto;
   scroll-behavior: smooth;
+  scrollbar-width: none;
 }
+.stories-row::-webkit-scrollbar { display: none; }
 
 .story-circle-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-xs);
-  min-width: 80px;
+  gap: 5px;
+  min-width: 72px;
   cursor: pointer;
   text-align: center;
+  position: relative;
 }
 
 .story-ring {
-  width: 66px;
-  height: 66px;
-  border-radius: var(--radius-round);
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
   padding: 3px;
-  background: var(--active-gradient);
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform var(--transition-fast);
+  flex-shrink: 0;
 }
 
-.story-circle-wrapper:hover .story-ring {
-  transform: scale(1.05);
+.story-circle-wrapper.your-story .story-ring {
+  background: var(--border);
+}
+
+.story-circle-wrapper:active .story-ring {
+  transform: scale(0.92);
 }
 
 .story-ring img {
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-round);
+  border-radius: 50%;
   object-fit: cover;
-  background-color: var(--bg-card);
+  border: 3px solid var(--bg-card);
+}
+
+.story-add-btn {
+  position: absolute;
+  bottom: 18px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
   border: 2px solid var(--bg-card);
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  cursor: pointer;
 }
 
 .story-username {
   font-size: 11px;
-  font-weight: 700;
-  width: 70px;
+  font-weight: 500;
+  width: 72px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text-main);
 }
 
 .story-intention-tooltip {
-  font-size: 10px;
-  color: var(--text-muted);
-  width: 70px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none;
 }
 
 /* Category Filters Bar */
@@ -1018,11 +1040,12 @@ button, input, select, textarea {
 
 .post-card {
   background-color: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border: none;
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  max-width: 620px;
+  box-shadow: none;
+  border-bottom: 1px solid var(--border);
+  max-width: 100%;
   width: 100%;
   margin: 0 auto;
 }
@@ -1031,54 +1054,46 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-md);
-  border-bottom: 1px solid var(--border);
+  padding: 10px 12px;
+  border-bottom: none;
 }
 
 .post-author {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 10px;
   cursor: pointer;
 }
 
 .post-author img {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-round);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
   object-fit: cover;
-  border: 1px solid var(--border);
+  border: 2px solid transparent;
+  background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+              linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888) border-box;
 }
 
 .post-author-name {
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .post-tag {
-  background-color: var(--primary-light);
-  color: var(--primary);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 12px;
-  text-transform: uppercase;
+  display: none;
 }
 
 .quality-badge {
-  background-color: var(--bg-input);
-  font-size: 11px;
-  color: var(--text-muted);
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
+  display: none;
 }
 
 .post-body {
-  padding: var(--spacing-md);
-  font-family: var(--font-text);
-  font-size: 16px;
-  line-height: 1.6;
+  padding: 4px 12px 10px;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.5;
   white-space: pre-wrap;
 }
 
@@ -1101,10 +1116,10 @@ button, input, select, textarea {
 .post-actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  gap: 16px;
+  padding: 8px 12px;
+  border-top: none;
+  border-bottom: none;
 }
 
 .post-action-btn {
@@ -1113,11 +1128,20 @@ button, input, select, textarea {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: 5px;
   font-size: 13px;
-  font-weight: 700;
-  color: var(--text-muted);
-  transition: color var(--transition-fast);
+  font-weight: 600;
+  color: var(--text-main);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+  padding: 4px 0;
+}
+
+.post-action-btn:active {
+  transform: scale(0.85);
+}
+
+.post-action-btn span.material-icons {
+  font-size: 22px;
 }
 
 .post-action-btn:hover {
@@ -1125,12 +1149,66 @@ button, input, select, textarea {
 }
 
 .post-action-btn.active {
-  color: var(--primary);
+  color: #e1306c;
+}
+
+.post-action-btn.active span.material-icons {
+  animation: heartPop 0.3s ease;
+}
+
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
 }
 
 .post-action-btn span {
   font-size: 22px;
 }
+
+/* Instagram-style new card elements */
+.post-author-category {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 1px;
+  display: block;
+}
+
+.post-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-main);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: opacity var(--transition-fast);
+  margin-left: auto;
+}
+
+.post-menu-btn:active { opacity: 0.4; }
+
+.post-like-count {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0 12px 4px;
+  color: var(--text-main);
+}
+
+.post-media-container {
+  width: 100%;
+  background-color: #000;
+}
+
+.post-media-container img,
+.post-media-container video {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
 
 .comments-section {
   padding: var(--spacing-md);
@@ -2050,56 +2128,153 @@ button, input, select, textarea {
 }
 
 @media (max-width: 768px) {
+  /* Auth responsive */
   .auth-card {
     grid-template-columns: 1fr;
     width: 100%;
     margin: 10px;
     border-radius: var(--radius-md);
   }
-  
-  .auth-brand-pane {
-    display: none !important;
-  }
+  .auth-brand-pane { display: none !important; }
 
+  /* ─── App Shell ─── */
   .app-layout {
     grid-template-columns: 1fr;
-    padding-bottom: 70px; /* Space for bottom nav */
+    padding-bottom: 60px;
   }
-  
+
+  .central-panel {
+    margin-left: 0;
+    padding: 0;
+  }
+
+  /* ─── Instagram-style sticky top header ─── */
+  .mobile-top-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mobile-logo {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .mobile-logo .logo-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .mobile-logo .logo-icon { display: none; }
+
+  .mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mobile-action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-main);
+    transition: opacity var(--transition-fast);
+  }
+  .mobile-action-btn:active { opacity: 0.5; }
+  .mobile-action-btn span { font-size: 26px; }
+
+  /* Hide desktop top header on mobile */
+  .top-header { display: none !important; }
+
+  /* ─── Stories section mobile ─── */
+  .stories-row {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    gap: 14px;
+  }
+
+  .story-ring {
+    width: 64px;
+    height: 64px;
+  }
+
+  /* ─── Feed posts mobile ─── */
+  .feed-header-block { display: none; }
+
+  .post-card {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin-bottom: 0;
+  }
+
+  .post-header {
+    padding: 10px 12px;
+  }
+
+  .post-body {
+    padding: 4px 12px 8px;
+    font-size: 14px;
+  }
+
+  .post-actions {
+    padding: 4px 12px 10px;
+  }
+
+  .category-filters {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ─── Bottom navigation bar (Instagram style) ─── */
   .left-sidebar {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 56px;
     width: 100vw;
     flex-direction: row;
     padding: 0;
     border-right: none;
     border-top: 1px solid var(--border);
-    justify-content: space-around;
-    align-items: center;
     background-color: var(--bg-card);
-    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.05);
     z-index: 1000;
   }
-  
-  .sidebar-logo, 
-  .create-post-btn .nav-label, 
+
+  .sidebar-logo,
   .nav-item .nav-label,
-  .logout-btn .nav-label {
+  .logout-btn .nav-label,
+  .create-post-btn .nav-label {
     display: none !important;
   }
-  
+
   .sidebar-nav {
     flex-direction: row;
-    justify-content: space-around;
     width: 100%;
-    margin: 0;
     height: 100%;
-    align-items: center;
+    margin: 0;
+    align-items: stretch;
+    justify-content: space-around;
   }
-  
+
   .nav-item {
     display: flex;
     flex-direction: column;
@@ -2108,24 +2283,44 @@ button, input, select, textarea {
     flex: 1;
     height: 100%;
     padding: 0;
-    background: none;
     border: none;
+    background: none;
     color: var(--text-muted);
     transition: color var(--transition-fast), transform var(--transition-fast);
+    border-radius: 0;
   }
 
-  .nav-item:active {
-    transform: scale(0.9);
-  }
-
-  .nav-item span {
-    font-size: 26px !important;
-  }
+  .nav-item:active { transform: scale(0.8); }
+  .nav-item span.material-icons { font-size: 26px !important; }
 
   .nav-item.active {
-    color: var(--primary);
+    color: var(--text-main);
   }
-  
+
+  /* Active dot indicator under icon */
+  .nav-item.active::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    background: var(--text-main);
+    border-radius: 50%;
+    margin-top: 3px;
+  }
+
+  /* Create button styled like Instagram's + */
+  #nav-create-mobile {
+    display: flex !important;
+  }
+
+  #nav-create-mobile span.material-icons {
+    border: 2px solid var(--text-main);
+    border-radius: 8px;
+    font-size: 20px !important;
+    padding: 2px;
+  }
+
+  /* Hide all these from the bottom bar */
   #nav-health,
   #nav-chat,
   #nav-communities,
@@ -2135,95 +2330,32 @@ button, input, select, textarea {
     display: none !important;
   }
 
-  #nav-create-mobile {
-    display: flex !important;
+  /* ─── Profile avatar in bottom nav ─── */
+  #nav-profile span.material-icons {
+    font-size: 28px !important;
   }
 
-  .mobile-only-quick-nav {
-    display: block !important;
-  }
+  /* ─── Mobile quick nav grid on profile page ─── */
+  .mobile-only-quick-nav { display: block !important; }
 
-  .mobile-top-header {
-    display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--bg-card);
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .mobile-logo {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    cursor: pointer;
-  }
-
-  .mobile-logo .logo-icon {
-    color: var(--primary);
-    font-size: 24px;
-  }
-
-  .mobile-logo .logo-text {
-    font-family: 'Outfit', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-main);
-  }
-
-  .mobile-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-  }
-
-  .mobile-action-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: var(--spacing-xs);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-main);
-    transition: transform var(--transition-fast);
-  }
-
-  .mobile-action-btn:active {
-    transform: scale(0.9);
-  }
-
-  .mobile-action-btn span {
-    font-size: 24px;
-  }
-
-  .top-header {
-    position: relative;
-    top: auto;
-    border-bottom: none;
-    padding: var(--spacing-xs) 0 var(--spacing-md) 0;
-  }
-
-  .central-panel {
-    margin-left: 0;
-    padding: var(--spacing-md);
-  }
-  
+  /* ─── Grid / Profile responsive ─── */
   .explore-grid, .communities-grid, .health-metrics-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .profile-header-card {
     grid-template-columns: 1fr;
     text-align: center;
   }
-  
-  .profile-main-info {
-    flex-direction: column;
+
+  .profile-main-info { flex-direction: column; }
+
+  /* ─── Reels: Full-width card ─── */
+  .reel-card {
+    width: 100%;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
   }
 }
 

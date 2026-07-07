@@ -673,13 +673,35 @@ function loadStories() {
     { name: 'Dr. Elena R.', pic: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80', intention: 'Focus Block (45m)' },
     { name: 'Dev Guy', pic: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&h=150&q=80', intention: 'Code Express server' },
     { name: 'Marcus Run', pic: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80', intention: 'WHO 8k Walk' },
-    { name: 'Calm Mind', pic: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80', intention: 'Deep breathing reset' }
+    { name: 'Calm Mind', pic: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80', intention: 'Deep breathing reset' },
+    { name: 'Aarav S.', pic: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=150&h=150&q=80', intention: 'Morning yoga' },
+    { name: 'Mei Lin', pic: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80', intention: 'Reading session' }
   ];
 
   const container = document.getElementById('stories-container');
   if (!container) return;
 
   container.innerHTML = '';
+
+  // "Your Story" first item with + button (Instagram style)
+  const userPic = (state.currentUser && state.currentUser.avatar)
+    ? state.currentUser.avatar
+    : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80';
+  const yourStoryWrap = document.createElement('div');
+  yourStoryWrap.className = 'story-circle-wrapper your-story';
+  yourStoryWrap.onclick = () => {
+    const createBtn = document.getElementById('nav-create-mobile');
+    if (createBtn) createBtn.click();
+  };
+  yourStoryWrap.innerHTML = `
+    <div class="story-ring">
+      <img src="${userPic}" alt="Your Story">
+    </div>
+    <div class="story-add-btn">+</div>
+    <div class="story-username">Your story</div>
+  `;
+  container.appendChild(yourStoryWrap);
+
   stories.forEach(st => {
     const wrap = document.createElement('div');
     wrap.className = 'story-circle-wrapper';
@@ -688,8 +710,7 @@ function loadStories() {
       <div class="story-ring">
         <img src="${st.pic}" alt="${st.name}">
       </div>
-      <div class="story-username">${st.name}</div>
-      <div class="story-intention-tooltip">${st.intention}</div>
+      <div class="story-username">${st.name.split(' ')[0]}</div>
     `;
     container.appendChild(wrap);
   });
@@ -785,34 +806,43 @@ function renderFeed() {
           <img src="${post.authorPic}" alt="${post.authorName}">
           <div>
             <div class="post-author-name">${post.authorName}</div>
-            <span class="post-tag">${post.category}</span>
+            <span class="post-author-category">${post.category}</span>
           </div>
         </div>
-        <div class="quality-badge">Quality Rank: ${(post.qualityScore * 10).toFixed(1)}</div>
+        <button class="post-menu-btn" onclick="event.stopPropagation()" aria-label="More options">
+          <span class="material-icons">more_horiz</span>
+        </button>
       </div>
-      
-      <div class="post-body">${post.content}</div>
       
       ${mediaHtml}
       ${diagramHtml}
       
       <div class="post-actions">
-        <button class="post-action-btn ${valuableClass}" onclick="toggleValuable('${post.id}')">
-          <span class="material-icons">${isValuable ? 'verified' : 'workspace_premium'}</span>
-          <span>Valuable (${post.valuableCount || 0})</span>
+        <button class="post-action-btn ${valuableClass}" onclick="toggleValuable('${post.id}')" aria-label="Like">
+          <span class="material-icons">${isValuable ? 'favorite' : 'favorite_border'}</span>
         </button>
-        <button class="post-action-btn" onclick="toggleCommentsDisplay('${post.id}')">
-          <span class="material-icons">chat</span>
-          <span>Discuss</span>
+        <button class="post-action-btn" onclick="toggleCommentsDisplay('${post.id}')" aria-label="Comment">
+          <span class="material-icons">chat_bubble_outline</span>
+        </button>
+        <button class="post-action-btn" aria-label="Share">
+          <span class="material-icons">near_me</span>
+        </button>
+        <div style="flex:1"></div>
+        <button class="post-action-btn" aria-label="Save">
+          <span class="material-icons">bookmark_border</span>
         </button>
       </div>
+
+      <div class="post-like-count">${(post.valuableCount || 0)} likes</div>
+
+      <div class="post-body">${post.content}</div>
 
       <div class="comments-section hidden" id="comments-sec-${post.id}">
         <div class="comments-list" id="comments-list-${post.id}">
           <!-- Comments loaded dynamically -->
         </div>
         <form class="comment-input-form" onsubmit="handleSendComment(event, '${post.id}')">
-          <input type="text" placeholder="Add to discussion..." id="comment-input-${post.id}" required>
+          <input type="text" placeholder="Add a comment..." id="comment-input-${post.id}" required>
           <button type="submit" class="btn btn-primary btn-sm">Post</button>
         </form>
       </div>
