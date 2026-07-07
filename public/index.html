@@ -309,6 +309,10 @@
           <span class="material-icons">explore</span>
           <span class="nav-label">Explore</span>
         </button>
+        <button class="nav-item" id="nav-create-mobile" onclick="openCreatePostModal()">
+          <span class="material-icons">add_box</span>
+          <span class="nav-label">Create</span>
+        </button>
         <button class="nav-item" id="nav-reels" onclick="navigateTo('reels')">
           <span class="material-icons">play_circle_outline</span>
           <span class="nav-label">Reels</span>
@@ -350,6 +354,19 @@
     
     <!-- CENTRAL PANEL -->
     <main class="central-panel">
+      
+      <!-- Mobile Top Header (Instagram Style) -->
+      <div class="mobile-top-header">
+        <div class="mobile-logo" onclick="navigateTo('home')">
+          <span class="material-icons logo-icon">spa</span>
+          <span class="logo-text">Sanairo</span>
+        </div>
+        <div class="mobile-actions">
+          <button class="mobile-action-btn" onclick="navigateTo('chat')" title="AI Coach Chat">
+            <span class="material-icons">chat_bubble_outline</span>
+          </button>
+        </div>
+      </div>
       
       <!-- Top Sticky Header -->
       <header class="top-header">
@@ -790,6 +807,28 @@
             <!-- Populated via JS -->
           </div>
           <button class="btn btn-primary btn-sm" style="margin-top: 15px" onclick="saveUserInterests()">Update Focus Areas</button>
+        </div>
+
+        <!-- Mobile Secondary Quick Nav Grid -->
+        <div class="mobile-only-quick-nav">
+          <h3 class="font-outfit explore-sub-title">Quick Settings & Tools</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: var(--spacing-sm);">
+            <button class="btn btn-secondary btn-sm" onclick="navigateTo('health')" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px;">
+              <span class="material-icons" style="font-size: 18px;">favorite</span> Health Hub
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="navigateTo('chat')" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px;">
+              <span class="material-icons" style="font-size: 18px;">chat_bubble</span> AI Coach
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="navigateTo('communities')" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px;">
+              <span class="material-icons" style="font-size: 18px;">groups</span> Communities
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="navigateTo('partners')" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px;">
+              <span class="material-icons" style="font-size: 18px;">handshake</span> Partners
+            </button>
+          </div>
+          <button class="btn btn-secondary btn-sm full-width-btn" onclick="handleLogout()" style="margin-top: 15px; color: #dc3545; border-color: rgba(220, 53, 69, 0.2); display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; box-sizing: border-box;">
+            <span class="material-icons" style="font-size: 18px;">logout</span> Logout
+          </button>
         </div>
 
         <h3 class="font-outfit explore-sub-title">Sanairo Premium Visual Themes</h3>

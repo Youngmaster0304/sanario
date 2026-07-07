@@ -2030,6 +2030,12 @@ button, input, select, textarea {
   opacity: 0.5;
 }
 
+#nav-create-mobile,
+.mobile-only-quick-nav,
+.mobile-top-header {
+  display: none !important;
+}
+
 /* -----------------------------------------
    Responsive Breakpoints
    ----------------------------------------- */
@@ -2073,6 +2079,9 @@ button, input, select, textarea {
     border-top: 1px solid var(--border);
     justify-content: space-around;
     align-items: center;
+    background-color: var(--bg-card);
+    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
   }
   
   .sidebar-logo, 
@@ -2087,25 +2096,118 @@ button, input, select, textarea {
     justify-content: space-around;
     width: 100%;
     margin: 0;
+    height: 100%;
+    align-items: center;
   }
   
   .nav-item {
-    width: auto;
-    padding: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    flex: 1;
+    height: 100%;
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    transition: color var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .nav-item:active {
+    transform: scale(0.9);
+  }
+
+  .nav-item span {
+    font-size: 26px !important;
+  }
+
+  .nav-item.active {
+    color: var(--primary);
   }
   
+  #nav-health,
+  #nav-chat,
+  #nav-communities,
+  #nav-partners,
+  .sidebar-footer,
   .create-post-btn {
-    margin-top: 0;
-    padding: 6px;
-    border-radius: var(--radius-round);
+    display: none !important;
   }
-  
-  .sidebar-footer {
-    border-top: none;
-    padding-top: 0;
+
+  #nav-create-mobile {
+    display: flex !important;
   }
-  
+
+  .mobile-only-quick-nav {
+    display: block !important;
+  }
+
+  .mobile-top-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .mobile-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+  }
+
+  .mobile-logo .logo-icon {
+    color: var(--primary);
+    font-size: 24px;
+  }
+
+  .mobile-logo .logo-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+
+  .mobile-action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-main);
+    transition: transform var(--transition-fast);
+  }
+
+  .mobile-action-btn:active {
+    transform: scale(0.9);
+  }
+
+  .mobile-action-btn span {
+    font-size: 24px;
+  }
+
+  .top-header {
+    position: relative;
+    top: auto;
+    border-bottom: none;
+    padding: var(--spacing-xs) 0 var(--spacing-md) 0;
+  }
+
   .central-panel {
     margin-left: 0;
     padding: var(--spacing-md);
