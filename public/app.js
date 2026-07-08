@@ -684,9 +684,9 @@ function loadStories() {
   container.innerHTML = '';
 
   // "Your Story" first item with + button (Instagram style)
-  const userPic = (state.currentUser && state.currentUser.avatar)
-    ? state.currentUser.avatar
-    : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80';
+  const userPic = (state.currentUser && (state.currentUser.profile_pic || state.currentUser.profilePic))
+    ? (state.currentUser.profile_pic || state.currentUser.profilePic)
+    : 'https://ui-avatars.com/api/?name=You&background=6366f1&color=fff&size=150';
   const yourStoryWrap = document.createElement('div');
   yourStoryWrap.className = 'story-circle-wrapper your-story';
   yourStoryWrap.onclick = () => {
@@ -695,7 +695,7 @@ function loadStories() {
   };
   yourStoryWrap.innerHTML = `
     <div class="story-ring">
-      <img src="${userPic}" alt="Your Story">
+      <img src="${userPic}" alt="Your Story" onerror="this.src='https://ui-avatars.com/api/?name=You&background=6366f1&color=fff&size=150'">
     </div>
     <div class="story-add-btn">+</div>
     <div class="story-username">Your story</div>
@@ -706,9 +706,10 @@ function loadStories() {
     const wrap = document.createElement('div');
     wrap.className = 'story-circle-wrapper';
     wrap.onclick = () => sendQuickMessage(`Tell me about your friend ${st.name}'s intention: "${st.intention}"`);
+    const initials = st.name.split(' ').map(n=>n[0]).join('').toUpperCase();
     wrap.innerHTML = `
       <div class="story-ring">
-        <img src="${st.pic}" alt="${st.name}">
+        <img src="${st.pic}" alt="${st.name}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=dc2743&color=fff&size=150'">
       </div>
       <div class="story-username">${st.name.split(' ')[0]}</div>
     `;
@@ -803,10 +804,11 @@ function renderFeed() {
     card.innerHTML = `
       <div class="post-header">
         <div class="post-author" onclick="sendQuickMessage('Show me profile details for ${post.authorName}')">
-          <img src="${post.authorPic}" alt="${post.authorName}">
+          <img src="${post.authorPic || ''}" alt="${post.authorName}"
+            onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent((post.authorName||'U').slice(0,2))}&background=6366f1&color=fff&size=80'">
           <div>
-            <div class="post-author-name">${post.authorName}</div>
-            <span class="post-author-category">${post.category}</span>
+            <div class="post-author-name">${post.authorName || 'Unknown'}</div>
+            <span class="post-author-category">${post.category || ''}</span>
           </div>
         </div>
         <button class="post-menu-btn" onclick="event.stopPropagation()" aria-label="More options">
@@ -833,7 +835,7 @@ function renderFeed() {
         </button>
       </div>
 
-      <div class="post-like-count">${(post.valuableCount || 0)} likes</div>
+      <div class="post-like-count">${(post.valuableCount || 0)} ${(post.valuableCount || 0) === 1 ? 'like' : 'likes'}</div>
 
       <div class="post-body">${post.content}</div>
 

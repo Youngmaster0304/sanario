@@ -355,7 +355,7 @@ app.post('/api/posts', authUser, async (req, res) => {
     const post = await db.createPost(
       req.user.id,
       req.user.name,
-      req.user.profilePic,
+      req.user.profile_pic || req.user.profilePic || '',
       content,
       category,
       0.85 - (evaluation.score * 0.1),
@@ -445,7 +445,7 @@ app.post('/api/reels', authUser, async (req, res) => {
     const reel = await db.createReel(
       req.user.id,
       req.user.name,
-      req.user.profilePic,
+      req.user.profile_pic || req.user.profilePic || '',
       title,
       description || '',
       category,

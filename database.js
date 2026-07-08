@@ -298,9 +298,11 @@ class SQLDatabase {
 
   async getUserById(id) {
     const user = await this.queryRow(`SELECT * FROM users WHERE id = ?`, [id]);
-    if (user && user.interests) {
-      user.interests = user.interests.split(',');
-    }
+    if (!user) return null;
+    if (user.interests) user.interests = user.interests.split(',');
+    // Expose camelCase aliases for frontend compatibility
+    user.profilePic = user.profile_pic || '';
+    user.growthVibe = user.growth_vibe || '';
     return user;
   }
 
@@ -401,6 +403,21 @@ class SQLDatabase {
     return await this.getUserById(userId);
   }
 
+  // --- Helper: Normalize post fields from snake_case to camelCase ---
+  _normalizePost(post) {
+    if (!post) return null;
+    post.authorName   = post.author_name  || post.authorName  || 'Unknown';
+    post.authorPic    = post.author_pic   || post.authorPic   || '';
+    post.qualityScore = post.quality_score != null ? post.quality_score : (post.qualityScore || 0.8);
+    post.valuableCount = post.valuable_count != null ? post.valuable_count : (post.valuableCount || 0);
+    post.hasDiagram   = post.has_diagram  || post.hasDiagram  || false;
+    post.diagramType  = post.diagram_type || post.diagramType || '';
+    post.mediaType    = post.media_type   || post.mediaType   || 'text';
+    post.mediaUrl     = post.media_url    || post.mediaUrl    || '';
+    post.createdAt    = post.created_at   || post.createdAt   || '';
+    return post;
+  }
+
   // --- Posts API ---
   async getPosts() {
     const posts = await this.query(`SELECT * FROM posts ORDER BY created_at DESC`);
@@ -408,6 +425,7 @@ class SQLDatabase {
     for (const post of posts) {
       const vals = await this.query(`SELECT user_id FROM post_valuables WHERE post_id = ?`, [post.id]);
       post.valuables = vals.map(v => v.user_id);
+      this._normalizePost(post);
     }
     return posts;
   }
@@ -423,6 +441,7 @@ class SQLDatabase {
 
     const post = await this.queryRow(`SELECT * FROM posts WHERE id = ?`, [id]);
     post.valuables = [];
+    this._normalizePost(post);
     return post;
   }
 
@@ -447,6 +466,7 @@ class SQLDatabase {
     const updatedPost = await this.queryRow(`SELECT * FROM posts WHERE id = ?`, [postId]);
     const vals = await this.query(`SELECT user_id FROM post_valuables WHERE post_id = ?`, [postId]);
     updatedPost.valuables = vals.map(v => v.user_id);
+    this._normalizePost(updatedPost);
     return updatedPost;
   }
 
@@ -459,11 +479,15 @@ class SQLDatabase {
       (?, ?, ?, ?, ?)
     `, [id, postId, authorName, content, createdAt]);
 
-    return await this.queryRow(`SELECT * FROM comments WHERE id = ?`, [id]);
+    const comment = await this.queryRow(`SELECT * FROM comments WHERE id = ?`, [id]);
+    if (comment) comment.authorName = comment.author_name;
+    return comment;
   }
 
   async getComments(postId) {
-    return await this.query(`SELECT * FROM comments WHERE post_id = ? ORDER BY created_at ASC`, [postId]);
+    const comments = await this.query(`SELECT * FROM comments WHERE post_id = ? ORDER BY created_at ASC`, [postId]);
+    comments.forEach(c => { c.authorName = c.author_name; });
+    return comments;
   }
 
   // --- Reels API ---
@@ -472,6 +496,7 @@ class SQLDatabase {
     for (const reel of reels) {
       const vals = await this.query(`SELECT user_id FROM reel_valuables WHERE reel_id = ?`, [reel.id]);
       reel.valuables = vals.map(v => v.user_id);
+      this._normalizePost(reel); // reels share the same field structure
     }
     return reels;
   }
@@ -487,6 +512,7 @@ class SQLDatabase {
 
     const reel = await this.queryRow(`SELECT * FROM reels WHERE id = ?`, [id]);
     reel.valuables = [];
+    this._normalizePost(reel);
     return reel;
   }
 
@@ -508,6 +534,7 @@ class SQLDatabase {
     const updatedReel = await this.queryRow(`SELECT * FROM reels WHERE id = ?`, [reelId]);
     const vals = await this.query(`SELECT user_id FROM reel_valuables WHERE reel_id = ?`, [reelId]);
     updatedReel.valuables = vals.map(v => v.user_id);
+    this._normalizePost(updatedReel);
     return updatedReel;
   }
 
